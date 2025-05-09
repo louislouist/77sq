@@ -1,0 +1,44 @@
+# Node modules
+node_modules/
+
+# Output directories
+dist/
+build/
+
+# TypeScript cache
+*.tsbuildinfo
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS / editor files
+.DS_Store
+Thumbs.db
+
+# Environment files
+.env
+.env.*.local
+
+# -------------------
+# Neovim Specific
+# -------------------
+# Swap files
+*.swp
+*.swo
+
+# Undo files (if using persistent undo)
+*.un~
+
+# Neovim config (if you symlink or store in the project — optional)
+init.vim
+init.lua
+
+# Backup files
+*~
+
+# Lua LSP / Treesitter artifacts (optional, if stored locally)
+parser/
