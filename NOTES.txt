@@ -1,0 +1,38 @@
+TODO::
+::loop for following emergencies
+	if ac > 0... change loop time to every six secconds.
+	if ac =< 0... change loop to 1 minute.
+
+	create an array that puts any ac[n].hex into tracking.
+		once ac[n].hex leaves the array, for 1 hour that aircraft will not be elegable for socials.
+	
+	on first sighting to array and not in tracking.array
+		post to socials and write console and begin writing each 6 second update to db.
+
+::write to sqlite.
+	if hex is missing(MH-uuid);
+
+	//Current:
+	sqlite> .schema flights
+CREATE TABLE flights (
+                        id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        squawk TEXT,
+                        emergency TEXT,
+                        flight TEXT,
+                        type TEXT,
+                        ctime DATETIME,
+                        current_time DATETIME,
+                        full_json TEXT,
+                        timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
+                );
+
+::Add reddit support
+https://www.reddit.com/prefs/apps
+	create another app
+	choose script
+	get client ID, client secret, and set a redirect URI.
+Use Snoowrap to for reddit posting.
+	npm install snoowrap dotenv
+
+Done::
+
