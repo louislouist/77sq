@@ -1,5 +1,13 @@
 TODO::
 ::loop for following emergencies
+
+	start tracking loop.
+		set an array that holds hex, count, lastSeen: datetime;
+		fetch updateloop runs inside
+		 if no hex, set hexID and use that hexID for database, etc
+		 if ac[n].hex is in fetch, update count & lastseen: 
+		 else if lastseen > 1 hour, remove ac[n].hex;
+
 	if ac > 0... change loop time to every six secconds.
 	if ac =< 0... change loop to 1 minute.
 
@@ -11,6 +19,7 @@ TODO::
 
 ::write to sqlite.
 	if hex is missing(MH-uuid);
+	SQLite3 for async no-blocking read/write
 
 	//Current:
 	sqlite> .schema flights
@@ -33,6 +42,8 @@ https://www.reddit.com/prefs/apps
 	get client ID, client secret, and set a redirect URI.
 Use Snoowrap to for reddit posting.
 	npm install snoowrap dotenv
+
+Express routes for viewing aircraft.
 
 Done::
 
