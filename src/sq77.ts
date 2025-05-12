@@ -1,9 +1,11 @@
-import { argv0 } from "process";
 import { fetchADSB } from "./fetchADSB";
+import { formatDateEpoch } from "./etc/Dates";
+import { v4 as uuidv4 } from 'uuid';
 
 let running = true;
 
 interface Tracker {
+	id: string;
 	hex: string;
 	count: number;
 	lastSeen: number;  // Unix epoch Date.now();
@@ -15,10 +17,12 @@ export async function sq77() {
 	let tracking: Tracker[] = [];
 	while (running) {
 		const now = Date.now();
+		const nowFormated = formatDateEpoch(now);
 		const oneHourAgo = Date.now() - 60 * 60 * 1000;
 
 		const a77 = await fetchADSB();
 		if (a77) {
+			console.log(`${nowFormated}: current result:`)
 			console.log(a77);
 			a77.ac?.map((ac) => {
 				ac.mlat?.map((lat) => {
@@ -29,15 +33,15 @@ export async function sq77() {
 
 		// check if both arrays are empty
 		if ((!a77?.ac || a77.ac.length === 0) && tracking.length === 0) {
-			console.log("No aircraft found & no aircraft being tracked");
+			console.log(`${formatDateEpoch(now)}: No aircraft found & no aircraft tracked.`);
 		}
 
 		// if nothing is in the ac[] but tracking[] has items, show items.
 		// this is to make sure tracking is correctly being allocated.
 		if (a77?.ac?.length === 0 && tracking.length > 0) {
 			console.log("flight(s) still in tracking:\n");
-			tracking.map((ac) => {
-				console.log(`   hex: ${ac.hex}, count: ${ac.count}, last seen: ${ac.lastSeen}`);
+			tracking.forEach((ac) => {
+				console.log(`   sessionId:${ac.id} hex: ${ac.hex}, count: ${ac.count}, last seen: ${formatDateEpoch(ac.lastSeen)}`);
 			})
 
 		}
@@ -55,6 +59,8 @@ export async function sq77() {
 				if (tracking.some(tracked => tracked.hex === flight.hex)) {
 					// update count and lastSeen
 					console.log("updating tracked: ", flight.hex);
+					console.log(`    ${flight.hex}: callsign: ${flight.flight}: reg: ${flight.r?.trim()}: type: ${flight.t}`);
+					console.log(`    ${flight.squawk}: ${flight.emergency}: category: ${flight.category}`);
 					//get index
 					const index = tracking.findIndex(tracked => tracked.hex === flight.hex);
 					if (index !== -1) {
@@ -65,11 +71,22 @@ export async function sq77() {
 
 				} else {
 					// flight isn't being tracked and needs to be added to the tracking array.
+					const trackingId = uuidv4();
+
 					tracking.push({
+						id: trackingId,
 						hex: flight.hex,
 						count: 1,
 						lastSeen: now,
 					})
+					// send flight info to console
+					console.log(`${nowFormated}: New tracking session: ${trackingId} started.`)
+					console.log(`    ${flight.hex} is now being tracked.`);
+					console.log(`    ${flight.hex}: callsign: ${flight.flight}: reg: ${flight.r?.trim()}: type: ${flight.t}`);
+					console.log(`    ${flight.squawk}: ${flight.emergency}: category: ${flight.category}`);
+					// add to db
+
+					// run an other functions (like post to socials)
 				}
 
 			})
@@ -77,35 +94,26 @@ export async function sq77() {
 
 
 		// last remove elements from tracking once lastSeen > oneHourAgo.
-
-		if (a77?.ac && a77.ac.length > 0) {
-			// get aircraft hexCodes. warn to console if there is no hexCode.
-			let hexCodes: string[] = [];
-			hexCodes = a77.ac.map((ac) => {
-				// handle rare cases of missing hexCode
-				if (!ac.hex) {
-					console.log("sq77() ac missing hexCode");
-					console.log(a77.ac);
-					// write to DB
-					return undefined;
-				}
-				return ac.hex;
-			}).filter((hex) => hex != undefined);
-
-			// check tracking to see if hexCode exists already
-			const inTracking = hexCodes.every(code => tracking.some(tracker => tracker.hex === code))
-			if (hexCodes.some(code => tracking.some(tracker => tracker.hex === code))) {
-				// if exists, then update count and time
-
+		// tracking = tracking.filter(tracked => tracked.lastSeen > oneHourAgo);
+		// Mutates the orgininal array in-place
+		for (let i = tracking.length - 1; i >= 0; i--) {
+			if (tracking[i].lastSeen <= oneHourAgo) {
+				console.log(`${nowFormated}: removing session ${tracking[i].id}. hex: ${tracking[i].hex}`)
+				tracking.splice(i, 1);
 			}
-			// if not exitst. add to tracking & run first time events 
+		}
+
+		if (tracking.length > 0) {
+			console.log("In tracking:");
+			console.log(JSON.stringify(tracking, null, 2));
 		}
 
 		console.log("epoch one hour ago: ", oneHourAgo);
-
 		console.log("sq77() dev mode 10s when nothing in response.ac");
+
+		console.log("-------------------------------------------------------------------------------------------\n\n");
 		// if nothing is being tracked in ac, run once a minute. if aircraft are in ac, run every 6 secconds.
-		const timeout = (a77?.ac?.length ?? 0) > 0 ? 6000 : 10000; // TODO: change to 60000 in prod.
+		const timeout = (a77?.ac?.length ?? 0) > 0 ? 6000 : 30000; // TODO: 10000:: change to 60000 in prod.
 		await new Promise((resolve) => setTimeout(resolve, timeout));
 	}
 	console.log("stopped sq77()");

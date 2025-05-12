@@ -1,23 +1,8 @@
 TODO::
-::loop for following emergencies
-
-	start tracking loop.
-		set an array that holds hex, count, lastSeen: datetime;
-		fetch updateloop runs inside
-		 if no hex, set hexID and use that hexID for database, etc
-		 if ac[n].hex is in fetch, update count & lastseen: 
-		 else if lastseen > 1 hour, remove ac[n].hex;
-
-	if ac > 0... change loop time to every six secconds.
-	if ac =< 0... change loop to 1 minute.
-
-	create an array that puts any ac[n].hex into tracking.
-		once ac[n].hex leaves the array, for 1 hour that aircraft will not be elegable for socials.
-	
-	on first sighting to array and not in tracking.array
-		post to socials and write console and begin writing each 6 second update to db.
-
+Give tracking an id uuid for tracking the event#
 ::write to sqlite.
+	figure out schemas.
+
 	if hex is missing(MH-uuid);
 	SQLite3 for async no-blocking read/write
 
@@ -45,5 +30,26 @@ Use Snoowrap to for reddit posting.
 
 Express routes for viewing aircraft.
 
-Done::
 
+Closest Airports
+https://developers.amadeus.com/self-service/category/flights/api-doc/airport-nearest-relevant/api-reference
+https://aviation-edge.com/nearby-airport-and-city-api/
+
+Done::
+::loop for following emergencies
+
+	start tracking loop.
+		set an array that holds hex, count, lastSeen: datetime;
+		fetch updateloop runs inside
+		 if no hex, set hexID and use that hexID for database, etc
+		 if ac[n].hex is in fetch, update count & lastseen: 
+		 else if lastseen > 1 hour, remove ac[n].hex;
+
+	if ac > 0... change loop time to every six secconds.
+	if ac =< 0... change loop to 1 minute.
+
+	create an array that puts any ac[n].hex into tracking.
+		once ac[n].hex leaves the array, for 1 hour that aircraft will not be elegable for socials.
+	
+	on first sighting to array and not in tracking.array
+		post to socials and write console and begin writing each 6 second update to db.
