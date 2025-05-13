@@ -1,6 +1,7 @@
 import sqlite3 from 'sqlite3';
 import { open } from 'sqlite';
-import { Aircraft, handleAltBar } from '../types';
+import { Aircraft } from '../types';
+import { handleAltBar } from '../etc/Handlers';
 
 export async function dbSingleAircraftTracking(ac: Aircraft, trackingId: string) {
 	// TODO: add console.error

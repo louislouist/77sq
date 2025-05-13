@@ -45,6 +45,16 @@ Closest Airports
 https://developers.amadeus.com/self-service/category/flights/api-doc/airport-nearest-relevant/api-reference
 https://aviation-edge.com/nearby-airport-and-city-api/
 
+Reminders::
+via indexing 
+SELECT * FROM tracking_sessions WHERE session_id = 'abc123';
+SELECT * FROM tracking_sessions WHERE aircraft_id = 42;
+
+//first
+SELECT * FROM tracking_sessions WHERE session_id = ? ORDER BY seqNr ASC LIMIT 1;
+// last
+SELECT * FROM tracking_sessions WHERE session_id = ? ORDER BY seqNr DESC LIMIT 1;
+
 Done::
 ::loop for following emergencies
 

@@ -1,6 +1,7 @@
 import { fetchADSB } from "./fetchADSB";
 import { formatDateEpoch } from "./etc/Dates";
 import { v4 as uuidv4 } from 'uuid';
+import { dbSingleAircraftTracking } from "./db/dbSingleAircraftTracking";
 
 let running = true;
 
@@ -50,7 +51,7 @@ export async function sq77() {
 		if (a77?.ac) {
 			a77.ac.forEach((flight) => {
 				if (!flight.hex) {
-					// write to console and figure out where to write this in the db
+					// TODO: write to console and figure out where to write this in the db
 					console.log("Flight missing hexCode:\n");
 					console.log(flight);
 					return;
@@ -67,6 +68,12 @@ export async function sq77() {
 						tracking[index].count += 1;
 						tracking[index].lastSeen = now;
 						console.log("updated flight in tracking:\n", tracking[index]);
+
+						// update db
+						const seqNr = tracking[index].id;
+						console.log("============debugging tracking=========")
+						console.log(seqNr);
+						// dbSingleAircraftTracking(flight, tracking[index].id);
 					}
 
 				} else {
@@ -85,7 +92,7 @@ export async function sq77() {
 					console.log(`    ${flight.hex}: callsign: ${flight.flight}: reg: ${flight.r?.trim()}: type: ${flight.t}`);
 					console.log(`    ${flight.squawk}: ${flight.emergency}: category: ${flight.category}`);
 					// add to db
-
+					dbSingleAircraftTracking(flight, trackingId);
 					// run an other functions (like post to socials)
 				}
 
@@ -98,6 +105,7 @@ export async function sq77() {
 		// Mutates the orgininal array in-place
 		for (let i = tracking.length - 1; i >= 0; i--) {
 			if (tracking[i].lastSeen <= oneHourAgo) {
+				// TODO: final update on tracking.
 				console.log(`${nowFormated}: removing session ${tracking[i].id}. hex: ${tracking[i].hex}`)
 				tracking.splice(i, 1);
 			}

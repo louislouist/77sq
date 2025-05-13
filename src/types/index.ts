@@ -1,1 +1,1 @@
-export * from './adsb.d';
+export * from './adsb';

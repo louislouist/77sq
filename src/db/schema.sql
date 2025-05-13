@@ -21,7 +21,8 @@ CREATE TABLE IF NOT EXISTS transponders (
 
 -- tracking_sessions
 CREATE TABLE IF NOT EXISTS tracking_sessions (
-	id TEXT PRIMARY KEY,
+	id INTEGER PRIMARY KEY AUTOINCREMENT,
+	session_id TEXT NOT NULL,
 	aircraft_id INTEGER,
 	type TEXT,
 	alt_baro INTEGER,
@@ -33,3 +34,7 @@ CREATE TABLE IF NOT EXISTS tracking_sessions (
 	created_at TEXT DEFAULT CURRENT_TIMESTAMP,
 	FOREIGN KEY (aircraft_id) REFERENCES aircraft(id)
 );
+
+-- Indexing for session or aircraft
+CREATE INDEX idx_tracking_sessions_session_id ON tracking_sessions(session_id);
+CREATE INDEX idx_tracking_sessions_aircraft_id ON tracking_sessions(aircraft_id);
