@@ -9,18 +9,18 @@ export interface ADSBResponse {
 
 export interface Aircraft {
 	hex?: string;  // ICAO 24-bit aircraft address (hex)
-	type?: string;  // Aircraft type (e.g., A320, B738)
+	type?: string;  // //Probably radio source type  ====Aircraft type (e.g., A320, B738)
 	flight?: string;  // Flight identifier (callsign)
 	r?: string;  // Registration number
 	t?: string;  // Aircraft type description
-	alt_baro?: number;  // Barometric altitude in feet
+	alt_baro?: number | string;  // Barometric altitude in feet
 	alt_geom?: number;  // Geometric (GPS-based) altitude in feet
 	gs?: number;  // Ground speed in knots
 	track?: number;  // True track angle (heading) in degrees
 	baro_rate?: number;  // Rate of climb/descent (barometric) in feet/min
 	squawk?: string;  // Transponder squawk code (e.g., '7700')
 	emergency?: string;  // Emergency code indicator (e.g., '7700')
-	category?: string;  // Aircraft category (e.g., light, heavy)
+	category?: string;  // Emitter Category ADS-B DO-260B 2.2.3.2.5.2
 	lat?: number;  // Latitude
 	lon?: number;  // Longitude
 	nic?: number;  // Navigation Integrity Category
@@ -66,4 +66,19 @@ interface TisbSource {
 	id: string;               // Identifier for the relay ground station
 	timestamp?: number;       // Optional: timestamp of relay
 	feedType?: string;        // Optional: type of TIS-B source (e.g., radar, UAT)
+}
+
+export function handleAltBar(alt_bar: number | string | undefined): number | null {
+	if (alt_bar === undefined) return null;
+
+	if (typeof alt_bar === "string") {
+		if (alt_bar === "ground") {
+			return -7777;
+		} else {
+			console.log(`handleAltBar() value set -999: ${alt_bar}`);
+			return -9999;
+		}
+	}
+
+	return alt_bar;
 }

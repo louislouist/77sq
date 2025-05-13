@@ -1,7 +1,15 @@
 TODO::
-Give tracking an id uuid for tracking the event#
 ::write to sqlite.
+	add to startup the database creation sql.
+
 	figure out schemas.
+
+	transponder(hex[pk], aircraft_id[fk], source???)
+	aircraft(id, hex, registration, tracking[fk], flightNr[fk], date)
+	tracking(id, sequenceId, count, json, date)
+
+	errors (id, error_code, type, message, date)
+		fetch, db_write(when hex exists but other items are different)
 
 	if hex is missing(MH-uuid);
 	SQLite3 for async no-blocking read/write
@@ -19,6 +27,8 @@ CREATE TABLE flights (
                         full_json TEXT,
                         timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
                 );
+
+add express display info page.
 
 ::Add reddit support
 https://www.reddit.com/prefs/apps
@@ -53,3 +63,5 @@ Done::
 	
 	on first sighting to array and not in tracking.array
 		post to socials and write console and begin writing each 6 second update to db.
+Give tracking an id uuid for tracking the event#
+

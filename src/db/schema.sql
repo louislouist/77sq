@@ -1,0 +1,35 @@
+-- aircraft
+CREATE TABLE IF NOT EXISTS aircraft (
+	id INTEGER PRIMARY KEY AUTOINCREMENT,
+	registration TEXT,
+	type TEXT,
+	class TEXT,
+	callsign TEXT,
+	category TEXT,
+	created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+	updated_at TEXT DEFAULT CURRENT_TIMESTAMP
+);
+
+-- transponders
+CREATE TABLE IF NOT EXISTS transponders (
+	hex_code TEXT PRIMARY KEY,
+	aircraft_id INTEGER,
+	created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+	updated_at TEXT DEFAULT CURRENT_TIMESTAMP,
+	FOREIGN KEY (aircraft_id) REFERENCES aircraft(id) ON DELETE SET NULL
+);
+
+-- tracking_sessions
+CREATE TABLE IF NOT EXISTS tracking_sessions (
+	id TEXT PRIMARY KEY,
+	aircraft_id INTEGER,
+	type TEXT,
+	alt_baro INTEGER,
+	squawk TEXT,
+	emergency_type TEXT,
+	lat REAL,
+	lon REAL,
+	raw_json TEXT,
+	created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+	FOREIGN KEY (aircraft_id) REFERENCES aircraft(id)
+);

@@ -39,7 +39,7 @@ export async function sq77() {
 		// if nothing is in the ac[] but tracking[] has items, show items.
 		// this is to make sure tracking is correctly being allocated.
 		if (a77?.ac?.length === 0 && tracking.length > 0) {
-			console.log("flight(s) still in tracking:\n");
+			console.log("flight(s) still in tracking:");
 			tracking.forEach((ac) => {
 				console.log(`   sessionId:${ac.id} hex: ${ac.hex}, count: ${ac.count}, last seen: ${formatDateEpoch(ac.lastSeen)}`);
 			})
