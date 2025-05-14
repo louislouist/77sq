@@ -23,6 +23,8 @@ export interface Aircraft {
 	category?: string;  // Emitter Category ADS-B DO-260B 2.2.3.2.5.2
 	lat?: number;  // Latitude
 	lon?: number;  // Longitude
+	rr_lon: number // latitude if no ADS-B or MLAT position available, a rough estimated position
+	rr_lat: number // longitude if no ADS-B or MLAT position available, a rough estimated position
 	nic?: number;  // Navigation Integrity Category
 	rc?: number;  // Radius of Containment indicator
 	seen_pos?: number;  // Seconds since last position update
@@ -66,19 +68,4 @@ interface TisbSource {
 	id: string;               // Identifier for the relay ground station
 	timestamp?: number;       // Optional: timestamp of relay
 	feedType?: string;        // Optional: type of TIS-B source (e.g., radar, UAT)
-}
-
-export function handleAltBar(alt_bar: number | string | undefined): number | null {
-	if (alt_bar === undefined) return null;
-
-	if (typeof alt_bar === "string") {
-		if (alt_bar === "ground") {
-			return -7777;
-		} else {
-			console.log(`handleAltBar() value set -999: ${alt_bar}`);
-			return -9999;
-		}
-	}
-
-	return alt_bar;
 }

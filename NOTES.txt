@@ -1,12 +1,17 @@
 TODO::
+Write something to handle soc posting. Need something that will handle all the optional data returned from adsb.lol.
+Move the db initialization into main();
+
+ triggerUncaughtException(err, true /* fromPromise */);
+    ^
+
+[Error: SQLITE_BUSY: database is locked] {
+  errno: 5,
+  code: 'SQLITE_BUSY'
+}
 ::write to sqlite.
 	add to startup the database creation sql.
 
-	figure out schemas.
-
-	transponder(hex[pk], aircraft_id[fk], source???)
-	aircraft(id, hex, registration, tracking[fk], flightNr[fk], date)
-	tracking(id, sequenceId, count, json, date)
 
 	errors (id, error_code, type, message, date)
 		fetch, db_write(when hex exists but other items are different)
@@ -74,4 +79,8 @@ Done::
 	on first sighting to array and not in tracking.array
 		post to socials and write console and begin writing each 6 second update to db.
 Give tracking an id uuid for tracking the event#
+figure out schemas.
+	transponder(hex[pk], aircraft_id[fk], source???)
+	aircraft(id, hex, registration, tracking[fk], flightNr[fk], date)
+	tracking(id, sequenceId, count, json, date)
 

@@ -64,8 +64,8 @@ export async function dbSingleAircraftTracking(ac: Aircraft, trackingId: string,
 				alt_baro ?? null,
 				ac.squawk ?? null,
 				ac.emergency ?? null,
-				ac.lat ?? null,
-				ac.lon ?? null,
+				ac.lat ?? ac.rr_lat ?? null,
+				ac.lon ?? ac.rr_lon ?? null,
 				JSON.stringify(ac)
 			]
 		);
