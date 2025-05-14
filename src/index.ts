@@ -7,6 +7,9 @@ let startSq77 = false;
 async function main() {
 	const db = await getDB();
 
+	// if schema check fails, stop running.
+	if (!db) { return };
+
 	startServer();
 
 	startSq77 = true;

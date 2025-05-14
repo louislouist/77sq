@@ -63,6 +63,9 @@ export async function sq77(db: Database) {
 					console.log("updating tracked: ", flight.hex);
 					console.log(`    ${flight.hex}: callsign: ${flight.flight}: reg: ${flight.r?.trim()}: type: ${flight.t}`);
 					console.log(`    ${flight.squawk}: ${flight.emergency}: category: ${flight.category}`);
+					if (flight.nav_modes && flight.nav_modes.length > 0) {
+						console.log(`    automation: ${flight.nav_modes.join(', ')}`);
+					}
 					//get index
 					const index = tracking.findIndex(tracked => tracked.hex === flight.hex);
 					if (index !== -1) {

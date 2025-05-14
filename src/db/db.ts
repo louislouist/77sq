@@ -43,7 +43,7 @@ async function verifyBasicSchema(db: Database): Promise<boolean> {
 	return true;
 }
 
-export async function getDB(): Promise<Database> {
+export async function getDB(): Promise<Database | undefined> {
 	sqlite3.verbose();
 
 	const dbExists = await fileExists(DB_PATH);
@@ -57,7 +57,15 @@ export async function getDB(): Promise<Database> {
 		await db.exec(schemaSQL);
 		console.log("Database created and initialized.");
 	} else {
-		console.log("Database already exists.");
+		const isValidSchema = await verifyBasicSchema(db);
+		if (!isValidSchema) {
+			console.error("Schema mismatch detected!!!\n Please correct the database and restart 77sq.");
+			return undefined;
+		} else {
+			console.log("db Schema is valid.")
+		}
+
+		console.log("Database connection established.");
 	}
 
 	return db;
