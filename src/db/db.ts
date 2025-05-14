@@ -19,6 +19,30 @@ async function fileExists(filePath: string): Promise<boolean> {
 	}
 }
 
+async function verifyBasicSchema(db: Database): Promise<boolean> {
+	const schemaSQL = await readFile(SCHEMA_PATH, "utf-8");
+
+	// Extract table and index names using regex
+	const objectNames = [
+		...schemaSQL.matchAll(/CREATE\s+TABLE\s+IF\s+NOT\s+EXISTS\s+(\w+)/gi),
+		...schemaSQL.matchAll(/CREATE\s+INDEX\s+(\w+)\s+ON/gi),
+	].map((match) => match[1]);
+
+	// Get existing tables and indexes in the DB
+	const rows = await db.all(`SELECT name FROM sqlite_master WHERE type IN ('table', 'index');`) as { name: string }[];
+	const existingNames = rows.map((row) => row.name);
+
+	// Find missing ones
+	const missing = objectNames.filter((name) => !existingNames.includes(name));
+
+	if (missing.length > 0) {
+		console.warn("⚠️ Missing schema objects:", missing);
+		return false;
+	}
+
+	return true;
+}
+
 export async function getDB(): Promise<Database> {
 	sqlite3.verbose();
 
