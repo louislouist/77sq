@@ -2,6 +2,7 @@ import { fetchADSB } from "./fetchADSB";
 import { formatDateEpoch } from "./etc/Dates";
 import { v4 as uuidv4 } from 'uuid';
 import { dbSingleAircraftTracking } from "./db/dbSingleAircraftTracking";
+import { Database } from "sqlite";
 
 let running = true;
 
@@ -14,7 +15,7 @@ interface Tracker {
 
 // if lastSeen < oneHourAgo {}
 
-export async function sq77() {
+export async function sq77(db: Database) {
 	let tracking: Tracker[] = [];
 	while (running) {
 		const now = Date.now();
@@ -74,7 +75,7 @@ export async function sq77() {
 						const seqNr = tracking[index].count += 1;
 						console.log("============debugging tracking=========")
 						console.log(`sessson_id: ${sesssion_id}, seqNr: ${seqNr}`);
-						dbSingleAircraftTracking(flight, sesssion_id, seqNr);
+						dbSingleAircraftTracking(db, flight, sesssion_id, seqNr);
 					}
 
 				} else {
@@ -93,7 +94,7 @@ export async function sq77() {
 					console.log(`    ${flight.hex}: callsign: ${flight.flight}: reg: ${flight.r?.trim()}: type: ${flight.t}`);
 					console.log(`    ${flight.squawk}: ${flight.emergency}: category: ${flight.category}`);
 					// add to db
-					dbSingleAircraftTracking(flight, trackingId, 1);
+					dbSingleAircraftTracking(db, flight, trackingId, 1);
 					// run an other functions (like post to socials)
 				}
 

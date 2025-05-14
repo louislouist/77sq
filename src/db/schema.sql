@@ -39,4 +39,3 @@ CREATE TABLE IF NOT EXISTS tracking_sessions (
 CREATE INDEX idx_tracking_sessions_session_id ON tracking_sessions(session_id);
 CREATE INDEX idx_tracking_sessions_aircraft_id ON tracking_sessions(aircraft_id);
 
-`);

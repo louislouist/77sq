@@ -1,13 +1,16 @@
+import { getDB } from "./db/db";
 import { startServer, stopServer } from "./server";
 import { sq77, stopSq77 } from "./sq77";
 
 let startSq77 = false;
 
 async function main() {
+	const db = await getDB();
+
 	startServer();
 
 	startSq77 = true;
-	sq77().catch((err) => {
+	sq77(db).catch((err) => {
 		console.error("sq77() error: ", err);
 	});
 
