@@ -1,0 +1,45 @@
+13:53:29 Wed 05-14-2025: current result:
+{
+  ac: [
+    {
+      hex: '6cd498',
+      type: 'mode_s',
+      flight: 'CEY1T3UO',
+      squawk: '7700',
+      category: 'C0',
+      version: 0,
+      mlat: [],
+      tisb: [],
+      messages: 6,
+      seen: 19.6,
+      rssi: -24.2
+    }
+  ],
+  msg: 'No error',
+  now: 1747245210001,
+  total: 1,
+  ctime: 1747245210001,
+  ptime: 0
+}
+13:53:29 Wed 05-14-2025: New tracking session: 5b3c67b9-0867-48f0-844d-a7509a5e392c started.
+    6cd498 is now being tracked.
+    6cd498: callsign: CEY1T3UO: reg: undefined: type: undefined
+    7700: undefined: category: C0
+In tracking:
+[
+  {
+    "id": "5b3c67b9-0867-48f0-844d-a7509a5e392c",
+    "hex": "6cd498",
+    "count": 1,
+    "lastSeen": 1747245209297
+  }
+]
+
+node:internal/process/promises:394
+    triggerUncaughtException(err, true /* fromPromise */);
+    ^
+
+[Error: SQLITE_CONSTRAINT: NOT NULL constraint failed: tracking_sessions.aircraft_id] {
+  errno: 19,
+  code: 'SQLITE_CONSTRAINT'
+}

@@ -1,6 +1,8 @@
 TODO::
 Write something to handle soc posting. Need something that will handle all the optional data returned from adsb.lol.
 Move the db initialization into main();
+handle nav_modes when the flight goes into approach.
+
 
  triggerUncaughtException(err, true /* fromPromise */);
     ^
@@ -45,6 +47,8 @@ Use Snoowrap to for reddit posting.
 
 Express routes for viewing aircraft.
 
+API info:
+https://www.adsbexchange.com/version-2-api-wip/
 
 Closest Airports
 https://developers.amadeus.com/self-service/category/flights/api-doc/airport-nearest-relevant/api-reference
@@ -83,4 +87,5 @@ figure out schemas.
 	transponder(hex[pk], aircraft_id[fk], source???)
 	aircraft(id, hex, registration, tracking[fk], flightNr[fk], date)
 	tracking(id, sequenceId, count, json, date)
+rrlon and rrlat
 

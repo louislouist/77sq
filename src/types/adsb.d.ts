@@ -43,8 +43,10 @@ export interface Aircraft {
 	messages?: number;  // Total messages received from this aircraft
 	seen?: number;  // Seconds since last message seen
 	rssi?: number;  // Signal strength (Received Signal Strength Indicator)
+	nav_modes?: string[];
 
 	// lastPosition: [Object],
+	// "nav_modes":["autopilot","approach","tcas"]
 }
 
 // mlat[] ?

@@ -3,7 +3,6 @@ CREATE TABLE IF NOT EXISTS aircraft (
 	id INTEGER PRIMARY KEY AUTOINCREMENT,
 	registration TEXT,
 	type TEXT,
-	class TEXT,
 	callsign TEXT,
 	category TEXT,
 	created_at TEXT DEFAULT CURRENT_TIMESTAMP,
