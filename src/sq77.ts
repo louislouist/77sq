@@ -70,10 +70,11 @@ export async function sq77() {
 						console.log("updated flight in tracking:\n", tracking[index]);
 
 						// update db
-						const seqNr = tracking[index].id;
+						const sesssion_id = tracking[index].id;
+						const seqNr = tracking[index].count += 1;
 						console.log("============debugging tracking=========")
-						console.log(seqNr);
-						// dbSingleAircraftTracking(flight, tracking[index].id);
+						console.log(`sessson_id: ${sesssion_id}, seqNr: ${seqNr}`);
+						dbSingleAircraftTracking(flight, sesssion_id, seqNr);
 					}
 
 				} else {
@@ -92,7 +93,7 @@ export async function sq77() {
 					console.log(`    ${flight.hex}: callsign: ${flight.flight}: reg: ${flight.r?.trim()}: type: ${flight.t}`);
 					console.log(`    ${flight.squawk}: ${flight.emergency}: category: ${flight.category}`);
 					// add to db
-					dbSingleAircraftTracking(flight, trackingId);
+					dbSingleAircraftTracking(flight, trackingId, 1);
 					// run an other functions (like post to socials)
 				}
 

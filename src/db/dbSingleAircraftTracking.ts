@@ -3,8 +3,9 @@ import { open } from 'sqlite';
 import { Aircraft } from '../types';
 import { handleAltBar } from '../etc/Handlers';
 
-export async function dbSingleAircraftTracking(ac: Aircraft, trackingId: string) {
+export async function dbSingleAircraftTracking(ac: Aircraft, trackingId: string, seqNr: number) {
 	// TODO: add console.error
+	// UPDATE for newtable session-id
 	if (!ac || !ac.hex || !trackingId) return;
 
 	const db = await open({
@@ -53,10 +54,11 @@ export async function dbSingleAircraftTracking(ac: Aircraft, trackingId: string)
 		const alt_baro = handleAltBar(ac.alt_baro);
 
 		await db.run(
-			`INSERT INTO tracking_sessions (id, aircraft_id, type, alt_baro, squawk, emergency_type, lat, lon, raw_json, created_at)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))`,
+			`INSERT INTO tracking_sessions (session_id, seqNr, aircraft_id, type, alt_baro, squawk, emergency_type, lat, lon, raw_json, created_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))`,
 			[
 				trackingId,
+				seqNr,
 				aircraftId,
 				ac.type ?? null,
 				alt_baro ?? null,
