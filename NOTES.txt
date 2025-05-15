@@ -49,6 +49,7 @@ Express routes for viewing aircraft.
 
 API info:
 https://www.adsbexchange.com/version-2-api-wip/
+https://www.adsbexchange.com/emitter-category-ads-b-do-260b-2-2-3-2-5-2/
 
 Closest Airports
 https://developers.amadeus.com/self-service/category/flights/api-doc/airport-nearest-relevant/api-reference
