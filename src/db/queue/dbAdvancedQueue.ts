@@ -1,3 +1,10 @@
+/*
+	.get() method is great for simple SELECTs.
+	.run() method is great for INSERT, UPDATE, and DELETE.
+	.all() to return all rows from a SELECT query.
+	logic with BEGIN TRANSACTION, still use add(...)
+*/
+
 type Job = {
 	fn: () => Promise<void>;
 	priority: number;
@@ -78,6 +85,20 @@ export class AdvancedJobQueue {
 					reject(err);
 				}
 			}, priority, 'write');
+		});
+	}
+
+	// Return all rows from a SELECT query
+	all<T = any[]>(db: any, sql: string, params: any[] = [], priority = 1): Promise<T> {
+		return new Promise((resolve, reject) => {
+			this.add(async () => {
+				try {
+					const result = await db.all(sql, params);
+					resolve(result);
+				} catch (err) {
+					reject(err);
+				}
+			}, priority, 'read');
 		});
 	}
 }
