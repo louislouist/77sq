@@ -43,3 +43,117 @@ node:internal/process/promises:394
   errno: 19,
   code: 'SQLITE_CONSTRAINT'
 }
+
+
+=================================
+
+04:12:02 Thu 05-15-2025: current result:
+{
+  ac: [
+    {
+      hex: '43c556',
+      type: 'mode_s',
+      flight: 'DEVIL12 ',
+      r: 'ZK019',
+      t: 'HAWK',
+      dbFlags: 1,
+      alt_baro: 1400,
+      squawk: '7700',
+      category: 'A6',
+      rr_lat: 53.3,
+      rr_lon: -5.5,
+      lastPosition: [Object],
+      alert: 0,
+      spi: 0,
+      mlat: [],
+      tisb: [],
+      messages: 11853,
+      seen: 0.6,
+      rssi: -7
+    },
+    {
+      hex: '43c557',
+      type: 'mode_s',
+      flight: 'DEVIL11 ',
+      r: 'ZK020',
+      t: 'HAWK',
+      dbFlags: 1,
+      alt_baro: 1350,
+      oat: 0,
+      tat: 0,
+      squawk: '7700',
+      emergency: 'general',
+      category: 'A6',
+      rr_lat: 53,
+      rr_lon: -5.5,
+      lastPosition: [Object],
+      version: 0,
+      alert: 1,
+      spi: 0,
+      mlat: [],
+      tisb: [],
+      messages: 12529,
+      seen: 0.9,
+      rssi: -13
+    }
+  ],
+  msg: 'No error',
+  now: 1747296726001,
+  total: 2,
+  ctime: 1747296726001,
+  ptime: 0
+}
+04:12:02 Thu 05-15-2025: New tracking session: fee4cbf0-572a-4431-872b-bc5edbcdb74a started.
+    43c556 is now being tracked.
+    43c556: callsign: DEVIL12 : reg: ZK019: type: HAWK
+    7700: undefined: category: A6
+updating tracked:  43c557
+    43c557: callsign: DEVIL11 : reg: ZK020: type: HAWK
+    7700: general: category: A6
+updated flight in tracking:
+ {
+  id: 'bdc7e4e0-3475-419e-8143-e859e876f657',
+  hex: '43c557',
+  count: 58,
+  lastSeen: 1747296722669
+}
+============debugging tracking=========
+sessson_id: bdc7e4e0-3475-419e-8143-e859e876f657, seqNr: 59
+In tracking:
+[
+  {
+    "id": "bdc7e4e0-3475-419e-8143-e859e876f657",
+    "hex": "43c557",
+    "count": 59,
+    "lastSeen": 1747296722669
+  },
+  {
+    "id": "fee4cbf0-572a-4431-872b-bc5edbcdb74a",
+    "hex": "43c556",
+    "count": 1,
+    "lastSeen": 1747296722669
+  }
+]
+epoch one hour ago:  1747293122670
+sq77() dev mode 10s when nothing in response.ac
+-------------------------------------------------------------------------------------------
+
+
+node:internal/process/promises:394
+    triggerUncaughtException(err, true /* fromPromise */);
+    ^
+
+Error: SQLITE_ERROR: cannot start a transaction within a transaction
+--> in Database#exec('BEGIN TRANSACTION', [Function (anonymous)])
+    at /Users/ltrump/src/7700/77sq/node_modules/sqlite/build/Database.js:211:21
+    at new Promise (<anonymous>)
+    at Database.exec (/Users/ltrump/src/7700/77sq/node_modules/sqlite/build/Database.js:209:16)
+    at dbSingleAircraftTracking (/Users/ltrump/src/7700/77sq/dist/db/dbSingleAircraftTracking.js:13:14)
+    at /Users/ltrump/src/7700/77sq/dist/sq77.js:68:81
+    at Array.forEach (<anonymous>)
+    at sq77 (/Users/ltrump/src/7700/77sq/dist/sq77.js:41:20)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5) {
+  errno: 1,
+  code: 'SQLITE_ERROR',
+  __augmented: true
+}

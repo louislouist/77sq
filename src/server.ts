@@ -1,5 +1,6 @@
-import express from 'express';
+import express, { Request, Response } from 'express';
 import http from 'http';
+import { Database } from 'sqlite';
 
 const app = express();
 const PORT = 3333;
@@ -10,7 +11,32 @@ app.get('/', (_req, res) => {
 	res.send('Hello from Express!');
 });
 
-export function startServer() {
+app.get('/tracking', async (req: Request, res: Response) => {
+	const db = req.app.locals.db;
+	try {
+		const items = await db.all('SELECT sqlite_version() AS version');
+
+		const html = `<!DOCTYPE html>
+    <html>
+      <head><title>Item List</title></head>
+      <body>
+        <h1>Items</h1>
+        <ul>
+          <li>SQLite version ${items[0].version}</li>
+        </ul>
+      </body>
+    </html>`;
+
+		res.send(html);
+	} catch (err) {
+		console.error("Error fetching data: ", err);
+		res.status(500).send('Internal Server Error');
+	}
+});
+
+export function startServer(db: Database) {
+	app.locals.db = db;
+
 	server = app.listen(PORT, () => {
 		console.log(`Server is running on http://localhost:${PORT}`);
 	});

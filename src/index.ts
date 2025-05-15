@@ -10,7 +10,7 @@ async function main() {
 	// if schema check fails, stop running.
 	if (!db) { return };
 
-	startServer();
+	startServer(db);
 
 	startSq77 = true;
 	sq77(db).catch((err) => {
