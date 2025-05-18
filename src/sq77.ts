@@ -129,7 +129,7 @@ export async function sq77(db: Database) {
 		console.log("epoch one hour ago: ", oneHourAgo);
 		console.log("sq77() dev mode 10s when nothing in response.ac");
 
-		console.log("-------------------------------------------------------------------------------------------\n\n");
+		console.log("-------------------------------------------------------------------------------\n\n");
 		// if nothing is being tracked in ac, run once a minute. if aircraft are in ac, run every 6 secconds.
 		const timeout = (a77?.ac?.length ?? 0) > 0 ? 6000 : 30000; // TODO: 10000:: change to 60000 in prod.
 		await new Promise((resolve) => setTimeout(resolve, timeout));
