@@ -1,41 +1,24 @@
 TODO::
-Add trim to flght column.
-Write something to handle soc posting. Need something that will handle all the optional data returned from adsb.lol.
+Write something to handle soc posting sentence. Need something that will handle all the optional data returned from adsb.lol.
 handle nav_modes when the flight goes into approach.
+::Add reddit support
+add express display info page.
+add telegram support.
+
+
+::clean up sq77()
+	modularize everything to allow adding fetch types to track any code or aircraft.
+
+debug console items.
 
 ::write to sqlite.
-	add to startup the database creation sql.
-
-
+	reddit post info.
 	errors (id, error_code, type, message, date)
 		fetch, db_write(when hex exists but other items are different)
 
-	if hex is missing(MH-uuid);
-	SQLite3 for async no-blocking read/write
-
-	//Current:
-	sqlite> .schema flights
-CREATE TABLE flights (
-                        id INTEGER PRIMARY KEY AUTOINCREMENT,
-                        squawk TEXT,
-                        emergency TEXT,
-                        flight TEXT,
-                        type TEXT,
-                        ctime DATETIME,
-                        current_time DATETIME,
-                        full_json TEXT,
-                        timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
-                );
 
 add express display info page.
 
-::Add reddit support
-https://www.reddit.com/prefs/apps
-	create another app
-	choose script
-	get client ID, client secret, and set a redirect URI.
-Use Snoowrap to for reddit posting.
-	npm install snoowrap dotenv
 
 telegram support:
 https://medium.com/@kondaurov.dev/typescript-client-for-telegram-bot-api-4dfd99ee1a92
@@ -96,4 +79,14 @@ figure out schemas.
 	tracking(id, sequenceId, count, json, date)
 rrlon and rrlat
 Move the db initialization into main();
-
+Add trim to flght column.
+sql::
+	if hex is missing(MH-uuid);
+	SQLite3 for async no-blocking read/write
+	add to startup the database creation sql.
+https://www.reddit.com/prefs/apps
+	create another app
+	choose script
+	get client ID, client secret, and set a redirect URI.
+Use Snoowrap to for reddit posting.
+	npm install snoowrap dotenv
