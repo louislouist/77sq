@@ -5,6 +5,7 @@ import { dbSingleAircraftTracking } from "./db/dbSingleAircraftTracking";
 import { Database } from "sqlite";
 import { dbJobQueue } from "./db/dbJobQueue";
 import { dbQueue } from "./db/queue/dbQueue";
+import { writeRandomTextFile } from "./etc/writeRandomTextFile";
 
 let running = true;
 
@@ -56,7 +57,7 @@ export async function sq77(db: Database) {
 				if (!flight.hex) {
 					// TODO: write to console and figure out where to write this in the db
 					console.log("Flight missing hexCode:\n");
-					console.log(flight);
+					console.log(flight)
 					return;
 				}
 				// check if flight.hex is in tracking.
@@ -82,7 +83,6 @@ export async function sq77(db: Database) {
 						console.log(`sessson_id: ${sesssion_id}, seqNr: ${seqNr}`);
 
 						dbQueue.add(() => dbSingleAircraftTracking(db, flight, sesssion_id, seqNr));
-						// dbJobQueue.add(() => dbSingleAircraftTracking(db, flight, sesssion_id, seqNr));
 					}
 
 				} else {
@@ -102,8 +102,23 @@ export async function sq77(db: Database) {
 					console.log(`    ${flight.squawk}: ${flight.emergency}: category: ${flight.category}`);
 					// add to db
 					dbQueue.add(() => dbSingleAircraftTracking(db, flight, trackingId, 1));
-					// dbJobQueue.add(() => dbSingleAircraftTracking(db, flight, trackingId, 1));
+
 					// run an other functions (like post to socials)
+					const sqTxt: SquawkText = {
+						registration: flight.r,
+						equipment: flight.t,
+						callsign: flight.flight,
+						hex: flight.hex,
+						lat: flight.lat ?? flight.rr_lat,
+						lon: flight.lon ?? flight.rr_lon
+					};
+
+					const postTitle = titleBuilder(sqTxt);
+					if (postTitle) {
+						console.log(postTitle);
+					}
+
+
 				}
 
 			})
