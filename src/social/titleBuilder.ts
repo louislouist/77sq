@@ -1,6 +1,8 @@
+import { findClosestAirports, loadAirports } from 'closest-airport-static-utils';
+
 // Squwak 7700 {type} emergency. Registration {r}: ({t}): Call sign: {flight}: Near {city} (hex if no r or call.)
 
-interface SquawkText {
+export interface SquawkText {
 	registration?: string;
 	equipment?: string;
 	callsign?: string;
@@ -8,8 +10,7 @@ interface SquawkText {
 	lat?: number;
 	lon?: number;
 }
-
-function titleBuilder(aircraft: SquawkText): string | null {
+export function titleBuilder(aircraft: SquawkText): string | null {
 	if (!aircraft.hex && !aircraft.registration && !aircraft.callsign) {
 		return null;
 	}
@@ -23,7 +24,7 @@ function titleBuilder(aircraft: SquawkText): string | null {
 	}
 
 	if (aircraft.callsign) {
-		title.push(`callsign: ${aircraft.callsign} `);
+		title.push(`callsign: ${aircraft.callsign.trim()} `);
 	}
 
 	if (!aircraft.registration && !aircraft.callsign) {
@@ -38,9 +39,33 @@ function titleBuilder(aircraft: SquawkText): string | null {
 
 	if (aircraft.lat != null && aircraft.lon != null) {
 		// query closest city.
+		const nearport = largeAirportInfo(aircraft.lat, aircraft.lon);
+		title.push(`near: ${nearport} `);
 	}
 
-	title.push('repoted.');
+	title.push('reported.');
 
 	return title.join("");
+}
+
+function largeAirportInfo(lat: number, lon: number): string {
+	const airports = loadAirports();
+	const firstLargeAirport = findClosestAirports(lat, lon, airports, 1, ['large_airport']);
+
+	const airportInfo: string[] = []
+
+	if (firstLargeAirport[0].icao) {
+		airportInfo.push(`${firstLargeAirport[0].icao}:`);
+	}
+
+	if (firstLargeAirport[0].name) {
+		airportInfo.push(`${firstLargeAirport[0].name}`);
+	}
+
+	if (airportInfo.length > 0) {
+		return airportInfo.join("");
+	} else {
+		return `lat: ${lat}, lon: ${lon}`
+	}
+
 }

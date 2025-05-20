@@ -1,10 +1,11 @@
 TODO::
-Write something to handle soc posting sentence. Need something that will handle all the optional data returned from adsb.lol.
 handle nav_modes when the flight goes into approach.
 ::Add reddit support
 add express display info page.
 add telegram support.
 
+https://www.liveatc.net/search/?icao=KLAX
+https://adsb.lol/?icao=a8dc3a
 
 ::clean up sq77()
 	modularize everything to allow adding fetch types to track any code or aircraft.
@@ -92,3 +93,4 @@ https://www.reddit.com/prefs/apps
 	get client ID, client secret, and set a redirect URI.
 Use Snoowrap to for reddit posting.
 	npm install snoowrap dotenv
+Write something to handle soc posting sentence. Need something that will handle all the optional data returned from adsb.lol.

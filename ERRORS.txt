@@ -157,3 +157,69 @@ Error: SQLITE_ERROR: cannot start a transaction within a transaction
   code: 'SQLITE_ERROR',
   __augmented: true
 }
+
+
+
+
+======
+08:43:08 Tue 05-20-2025: current result:
+{
+  ac: [
+    {
+      hex: '4030e2',
+      type: 'adsb_icao_nt',
+      flight: 'GNWHF   ',
+      r: 'G-NWHF',
+      t: 'T6',
+      alt_baro: 950,
+      alt_geom: 1100,
+      gs: 142,
+      track: 276.87,
+      geom_rate: 128,
+      squawk: '7700',
+      emergency: 'none',
+      category: 'A1',
+      lat: 50.798813,
+      lon: -0.346292,
+      nic: 6,
+      rc: 926,
+      seen_pos: 9.652,
+      version: 2,
+      nic_baro: 0,
+      nac_p: 9,
+      nac_v: 1,
+      sil: 1,
+      sil_type: 'perhour',
+      gva: 2,
+      sda: 0,
+      alert: 0,
+      spi: 0,
+      mlat: [],
+      tisb: [],
+      messages: 16870,
+      seen: 1.8,
+      rssi: -6.8
+    }
+  ],
+  msg: 'No error',
+  now: 1747744988500,
+  total: 1,
+  ctime: 1747744988500,
+  ptime: 0
+}
+08:43:08 Tue 05-20-2025: New tracking session: e3cc977d-01b3-40cb-8763-dcd2f0784ddc started.
+    4030e2 is now being tracked.
+    4030e2: callsign: GNWHF   : reg: G-NWHF: type: T6
+    7700: none: category: A1
+Squawk 7700 G-NWHF callsign: GNWHF    hex: 4030e2 (T6) near: EGKK:London Gatwick Airportrepoted.
+In tracking:
+[
+  {
+    "id": "e3cc977d-01b3-40cb-8763-dcd2f0784ddc",
+    "hex": "4030e2",
+    "count": 1,
+    "lastSeen": 1747744988498
+  }
+]
+epoch one hour ago:  1747741388500
+sq77() dev mode 10s when nothing in response.ac

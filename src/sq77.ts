@@ -3,9 +3,8 @@ import { formatDateEpoch } from "./etc/Dates";
 import { v4 as uuidv4 } from 'uuid';
 import { dbSingleAircraftTracking } from "./db/dbSingleAircraftTracking";
 import { Database } from "sqlite";
-import { dbJobQueue } from "./db/dbJobQueue";
 import { dbQueue } from "./db/queue/dbQueue";
-import { writeRandomTextFile } from "./etc/writeRandomTextFile";
+import { SquawkText, titleBuilder } from "./social/titleBuilder";
 
 let running = true;
 
