@@ -9,7 +9,7 @@ import { existsSync } from 'fs';
  * @returns The full path of the written file.
  */
 export async function writeRandomTextFile(content: string): Promise<string> {
-	const directory = './log';
+	const directory = './logs';
 
 	// Create the log directory if it doesn't exist
 	if (!existsSync(directory)) {

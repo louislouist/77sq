@@ -5,6 +5,8 @@ import { dbSingleAircraftTracking } from "./db/dbSingleAircraftTracking";
 import { Database } from "sqlite";
 import { dbQueue } from "./db/queue/dbQueue";
 import { SquawkText, titleBuilder } from "./social/titleBuilder";
+import { ADSBResponse, Aircraft } from "./types";
+import { writeRandomTextFile } from "./etc/writeRandomTextFile";
 
 let running = true;
 
@@ -15,142 +17,280 @@ interface Tracker {
 	lastSeen: number;  // Unix epoch Date.now();
 }
 
-// if lastSeen < oneHourAgo {}
+const ONE_HOUR_MS = 60 * 60 * 1000;
+const ACTIVE_POLL_INTERVAL = 6000;   // When aircraft are being tracked
+const IDLE_POLL_INTERVAL = 30000;    // When no aircraft are being tracked
 
-export async function sq77(db: Database) {
+/**
+ * Logs current aircraft data for debugging
+ */
+function logCurrentAircraftData(adsb: ADSBResponse | null, timestamp: string): void {
+	if (adsb) {
+		console.log(`${timestamp}: current result:`);
+		console.log(adsb);
+		adsb.ac?.forEach(ac => {
+			ac.mlat?.forEach(lat => {
+				console.log(lat);
+			});
+		});
+	}
+}
+
+/**
+ * Handles the case when no aircraft are found and none are being tracked
+ */
+function logNoActivityState(timestamp: string): void {
+	console.log(`${timestamp}: No aircraft found & no aircraft tracked.`);
+}
+
+/**
+ * Logs currently tracked flights when no new aircraft are detected
+ */
+function logTrackedFlights(tracking: Tracker[]): void {
+	if (tracking.length > 0) {
+		console.log("flight(s) still in tracking:");
+		tracking.forEach(ac => {
+			console.log(`   sessionId:${ac.id} hex: ${ac.hex}, count: ${ac.count}, last seen: ${formatDateEpoch(ac.lastSeen)}`);
+		});
+	}
+}
+
+/**
+ * Validates if aircraft has required hex code
+ */
+function validateAircraft(flight: Aircraft): boolean {
+	if (!flight.hex) {
+		console.log("Flight missing hexCode:\n", flight);
+		return false;
+	}
+	return true;
+}
+
+/**
+ * Logs aircraft information to console
+ */
+function logAircraftInfo(flight: Aircraft): void {
+	console.log(`    ${flight.hex}: callsign: ${flight.flight}: reg: ${flight.r?.trim()}: type: ${flight.t}`);
+	console.log(`    ${flight.squawk}: ${flight.emergency}: category: ${flight.category}`);
+	if (flight.nav_modes && flight.nav_modes.length > 0) {
+		console.log(`    automation: ${flight.nav_modes.join(', ')}`);
+	}
+}
+
+/**
+ * Updates existing tracked aircraft
+ */
+async function updateTrackedAircraft(
+	db: Database,
+	flight: Aircraft,
+	tracking: Tracker[],
+	now: number
+): Promise<void> {
+	console.log("updating tracked: ", flight.hex);
+	logAircraftInfo(flight);
+
+	const index = tracking.findIndex(tracked => tracked.hex === flight.hex);
+	if (index !== -1) {
+		tracking[index].count += 1;
+		tracking[index].lastSeen = now;
+		console.log("updated flight in tracking:\n", tracking[index]);
+
+		// Update database
+		const sessionId = tracking[index].id;
+		const seqNr = tracking[index].count;
+		console.log("============debugging tracking=========");
+		console.log(`session_id: ${sessionId}, seqNr: ${seqNr}`);
+
+		dbQueue.add(() => dbSingleAircraftTracking(db, flight, sessionId, seqNr));
+	}
+}
+
+async function postToSocial(
+	db: Database,
+	flight: Aircraft,
+	tracking: Tracker,
+): Promise<void> {
+	if (tracking.count < 3) {
+		console.error("postToSocial(): tracking count < 3: ", tracking.count.toString());
+		return;
+	}
+
+	const sqTxt: SquawkText = {
+		registration: flight.r,
+		equipment: flight.t,
+		callsign: flight.flight,
+		hex: flight.hex,
+		lat: flight.lat ?? flight.rr_lat,
+		lon: flight.lon ?? flight.rr_lon
+	};
+
+	const postTitle = titleBuilder(sqTxt);
+	if (!postTitle) {
+		console.error("postToSocial(): no post title: ", flight.hex)
+		return;
+	}
+
+}
+
+/**
+ * Creates social media post for new aircraft
+ */
+async function createSocialPost(flight: Aircraft): Promise<void> {
+	const sqTxt: SquawkText = {
+		registration: flight.r,
+		equipment: flight.t,
+		callsign: flight.flight,
+		hex: flight.hex,
+		lat: flight.lat ?? flight.rr_lat,
+		lon: flight.lon ?? flight.rr_lon
+	};
+
+	const postTitle = titleBuilder(sqTxt);
+	if (postTitle) {
+		console.log(postTitle);
+		await writeRandomTextFile(postTitle);
+
+	}
+}
+
+/**
+ * Adds new aircraft to tracking
+ */
+async function addNewTrackedAircraft(
+	db: Database,
+	flight: Aircraft,
+	tracking: Tracker[],
+	now: number,
+	timestamp: string
+): Promise<void> {
+	const trackingId = uuidv4();
+
+	tracking.push({
+		id: trackingId,
+		hex: flight.hex!,
+		count: 1,
+		lastSeen: now,
+	});
+
+	// Log new tracking session
+	console.log(`${timestamp}: New tracking session: ${trackingId} started.`);
+	console.log(`    ${flight.hex} is now being tracked.`);
+	logAircraftInfo(flight);
+
+	// Add to database
+	dbQueue.add(() => dbSingleAircraftTracking(db, flight, trackingId, 1));
+
+	// Create social media post
+	createSocialPost(flight);
+}
+
+/**
+ * Processes all current aircraft and updates tracking accordingly
+ */
+async function processCurrentAircraft(
+	db: Database,
+	adsb: ADSBResponse | null,
+	tracking: Tracker[],
+	now: number,
+	timestamp: string
+): Promise<void> {
+	if (!adsb?.ac) return;
+
+	for (const flight of adsb.ac) {
+		// Validate aircraft
+		if (!validateAircraft(flight)) continue;
+
+		// Check if aircraft is already being tracked
+		const isTracked = tracking.some(tracked => tracked.hex === flight.hex);
+
+		if (isTracked) {
+			await updateTrackedAircraft(db, flight, tracking, now);
+		} else {
+			await addNewTrackedAircraft(db, flight, tracking, now, timestamp);
+		}
+	}
+}
+
+/**
+ * Removes aircraft that haven't been seen for over an hour
+ */
+function cleanupExpiredTracking(tracking: Tracker[], oneHourAgo: number, timestamp: string): void {
+	for (let i = tracking.length - 1; i >= 0; i--) {
+		if (tracking[i].lastSeen <= oneHourAgo) {
+			console.log(`${timestamp}: removing session ${tracking[i].id}. hex: ${tracking[i].hex}`);
+			tracking.splice(i, 1);
+		}
+	}
+}
+
+/**
+ * Logs current tracking status
+ */
+function logTrackingStatus(tracking: Tracker[], oneHourAgo: number): void {
+	if (tracking.length > 0) {
+		console.log("In tracking:");
+		console.log(JSON.stringify(tracking, null, 2));
+	}
+
+	console.log("epoch one hour ago: ", oneHourAgo);
+	console.log("sq77() dev mode 10s when nothing in response.ac");
+	console.log("-------------------------------------------------------------------------------\n\n");
+}
+
+/**
+ * Determines the appropriate polling interval based on activity
+ */
+function getPollingInterval(aircraftCount: number): number {
+	return aircraftCount > 0 ? ACTIVE_POLL_INTERVAL : IDLE_POLL_INTERVAL;
+}
+
+/**
+ * Main aircraft tracking loop
+ */
+export async function sq77(db: Database): Promise<void> {
 	let tracking: Tracker[] = [];
+
 	while (running) {
 		const now = Date.now();
-		const nowFormated = formatDateEpoch(now);
-		const oneHourAgo = Date.now() - 60 * 60 * 1000;
+		const timestamp = formatDateEpoch(now);
+		const oneHourAgo = now - ONE_HOUR_MS;
 
-		const a77 = await fetchADSB();
-		if (a77) {
-			console.log(`${nowFormated}: current result:`)
-			console.log(a77);
-			a77.ac?.map((ac) => {
-				ac.mlat?.map((lat) => {
-					console.log(lat);
-				})
-			})
+		// Fetch current aircraft data
+		const adsb = await fetchADSB();
+
+		// Log current data for debugging
+		logCurrentAircraftData(adsb, timestamp);
+
+		// Handle different states
+		const hasCurrentAircraft = adsb?.ac && adsb.ac.length > 0;
+		const hasTrackedAircraft = tracking.length > 0;
+
+		if (!hasCurrentAircraft && !hasTrackedAircraft) {
+			logNoActivityState(timestamp);
+		} else if (!hasCurrentAircraft && hasTrackedAircraft) {
+			logTrackedFlights(tracking);
 		}
 
-		// check if both arrays are empty
-		if ((!a77?.ac || a77.ac.length === 0) && tracking.length === 0) {
-			console.log(`${formatDateEpoch(now)}: No aircraft found & no aircraft tracked.`);
-		}
+		// Process current aircraft
+		await processCurrentAircraft(db, adsb, tracking, now, timestamp);
 
-		// if nothing is in the ac[] but tracking[] has items, show items.
-		// this is to make sure tracking is correctly being allocated.
-		if (a77?.ac?.length === 0 && tracking.length > 0) {
-			console.log("flight(s) still in tracking:");
-			tracking.forEach((ac) => {
-				console.log(`   sessionId:${ac.id} hex: ${ac.hex}, count: ${ac.count}, last seen: ${formatDateEpoch(ac.lastSeen)}`);
-			})
+		// Clean up expired tracking sessions
+		cleanupExpiredTracking(tracking, oneHourAgo, timestamp);
 
-		}
+		// Log current status
+		logTrackingStatus(tracking, oneHourAgo);
 
-		// loop through every element in a77.ac to see if it is in tracking.
-		if (a77?.ac) {
-			a77.ac.forEach((flight) => {
-				if (!flight.hex) {
-					// TODO: write to console and figure out where to write this in the db
-					console.log("Flight missing hexCode:\n");
-					console.log(flight)
-					return;
-				}
-				// check if flight.hex is in tracking.
-				if (tracking.some(tracked => tracked.hex === flight.hex)) {
-					// update count and lastSeen
-					console.log("updating tracked: ", flight.hex);
-					console.log(`    ${flight.hex}: callsign: ${flight.flight}: reg: ${flight.r?.trim()}: type: ${flight.t}`);
-					console.log(`    ${flight.squawk}: ${flight.emergency}: category: ${flight.category}`);
-					if (flight.nav_modes && flight.nav_modes.length > 0) {
-						console.log(`    automation: ${flight.nav_modes.join(', ')}`);
-					}
-					//get index
-					const index = tracking.findIndex(tracked => tracked.hex === flight.hex);
-					if (index !== -1) {
-						tracking[index].count += 1;
-						tracking[index].lastSeen = now;
-						console.log("updated flight in tracking:\n", tracking[index]);
-
-						// update db
-						const sesssion_id = tracking[index].id;
-						const seqNr = tracking[index].count += 1;
-						console.log("============debugging tracking=========")
-						console.log(`sessson_id: ${sesssion_id}, seqNr: ${seqNr}`);
-
-						dbQueue.add(() => dbSingleAircraftTracking(db, flight, sesssion_id, seqNr));
-					}
-
-				} else {
-					// flight isn't being tracked and needs to be added to the tracking array.
-					const trackingId = uuidv4();
-
-					tracking.push({
-						id: trackingId,
-						hex: flight.hex,
-						count: 1,
-						lastSeen: now,
-					})
-					// send flight info to console
-					console.log(`${nowFormated}: New tracking session: ${trackingId} started.`)
-					console.log(`    ${flight.hex} is now being tracked.`);
-					console.log(`    ${flight.hex}: callsign: ${flight.flight}: reg: ${flight.r?.trim()}: type: ${flight.t}`);
-					console.log(`    ${flight.squawk}: ${flight.emergency}: category: ${flight.category}`);
-					// add to db
-					dbQueue.add(() => dbSingleAircraftTracking(db, flight, trackingId, 1));
-
-					// run an other functions (like post to socials)
-					const sqTxt: SquawkText = {
-						registration: flight.r,
-						equipment: flight.t,
-						callsign: flight.flight,
-						hex: flight.hex,
-						lat: flight.lat ?? flight.rr_lat,
-						lon: flight.lon ?? flight.rr_lon
-					};
-
-					const postTitle = titleBuilder(sqTxt);
-					if (postTitle) {
-						console.log(postTitle);
-					}
-
-
-				}
-
-			})
-		}
-
-
-		// last remove elements from tracking once lastSeen > oneHourAgo.
-		// tracking = tracking.filter(tracked => tracked.lastSeen > oneHourAgo);
-		// Mutates the orgininal array in-place
-		for (let i = tracking.length - 1; i >= 0; i--) {
-			if (tracking[i].lastSeen <= oneHourAgo) {
-				// TODO: final update on tracking.
-				console.log(`${nowFormated}: removing session ${tracking[i].id}. hex: ${tracking[i].hex}`)
-				tracking.splice(i, 1);
-			}
-		}
-
-		if (tracking.length > 0) {
-			console.log("In tracking:");
-			console.log(JSON.stringify(tracking, null, 2));
-		}
-
-		console.log("epoch one hour ago: ", oneHourAgo);
-		console.log("sq77() dev mode 10s when nothing in response.ac");
-
-		console.log("-------------------------------------------------------------------------------\n\n");
-		// if nothing is being tracked in ac, run once a minute. if aircraft are in ac, run every 6 secconds.
-		const timeout = (a77?.ac?.length ?? 0) > 0 ? 6000 : 30000; // TODO: 10000:: change to 60000 in prod.
-		await new Promise((resolve) => setTimeout(resolve, timeout));
+		// Wait before next iteration
+		const timeout = getPollingInterval(adsb?.ac?.length ?? 0);
+		await new Promise(resolve => setTimeout(resolve, timeout));
 	}
+
 	console.log("stopped sq77()");
 }
 
-export async function stopSq77() {
+/**
+ * Stops the tracking loop
+ */
+export async function stopSq77(): Promise<void> {
 	running = false;
 }

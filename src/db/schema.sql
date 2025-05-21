@@ -35,6 +35,35 @@ CREATE TABLE IF NOT EXISTS tracking_sessions (
     FOREIGN KEY (aircraft_id) REFERENCES aircraft(id)
 );
 
+-- socials
+CREATE TABLE IF NOT EXISTS social_platforms (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT UNIQUE NOT NULL,
+    created_at TEXT DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Add platforms
+INSERT OR IGNORE INTO social_platforms (name) VALUES
+('Reddit'),
+('Telegram'),
+('Bluesky');
+
+-- social posts
+CREATE TABLE IF NOT EXISTS flight_posts (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    tracking_session_id INTEGER,
+    platform_id INTEGER,
+    title TEXT,
+    message TEXT,
+    status TEXT,                    -- e.g., 'posted', 'failed', 'queued'
+    external_id TEXT,               -- ID or URL of the post on the platform
+    error_message TEXT,
+    created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+    updated_at TEXT DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (tracking_session_id) REFERENCES tracking_sessions(id),
+    FOREIGN KEY (platform_id) REFERENCES social_platforms(id)
+);
+
 -- Indexing for session or aircraft
 CREATE INDEX idx_tracking_sessions_session_id ON tracking_sessions(session_id);
 CREATE INDEX idx_tracking_sessions_aircraft_id ON tracking_sessions(aircraft_id);

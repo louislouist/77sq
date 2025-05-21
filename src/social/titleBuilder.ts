@@ -24,7 +24,16 @@ export function titleBuilder(aircraft: SquawkText): string | null {
 	}
 
 	if (aircraft.callsign) {
-		title.push(`callsign: ${aircraft.callsign.trim()} `);
+		// TODO: see if this covers the cases where callsign is showing up without a string.
+		// belt & suspenders. 
+		const rawCallsign = aircraft.callsign;
+
+		if (typeof rawCallsign === "string") {
+			const trimmedCallsign = rawCallsign.trim();
+			if (trimmedCallsign.length > 0) {
+				title.push(`callsign: ${trimmedCallsign} `);
+			}
+		}
 	}
 
 	if (!aircraft.registration && !aircraft.callsign) {
@@ -55,11 +64,11 @@ function largeAirportInfo(lat: number, lon: number): string {
 	const airportInfo: string[] = []
 
 	if (firstLargeAirport[0].icao) {
-		airportInfo.push(`${firstLargeAirport[0].icao}:`);
+		airportInfo.push(`${firstLargeAirport[0].icao}`);
 	}
 
 	if (firstLargeAirport[0].name) {
-		airportInfo.push(`${firstLargeAirport[0].name}`);
+		airportInfo.push(`: ${firstLargeAirport[0].name}`);
 	}
 
 	if (airportInfo.length > 0) {
