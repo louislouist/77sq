@@ -1,5 +1,6 @@
 TODO::
 npm build in "scripts"
+postTitle needs check for when r and callsign ===;
 postContent for reddit.
 	flightaware.
 	aiport radio.
@@ -18,6 +19,9 @@ https://adsb.lol/?icao=a8dc3a
 
 ::write to sqlite.
 
+::postreddit
+	throw errors instead of returning null.
+		add error message to flight_posts.error_message and set status to failed.
 
 add express display info page.
 

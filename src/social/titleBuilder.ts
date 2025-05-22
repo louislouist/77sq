@@ -19,8 +19,8 @@ export function titleBuilder(aircraft: SquawkText): string | null {
 
 	title.push("Squawk 7700 ");
 
-	if (aircraft.registration) {
-		title.push(`${aircraft.registration} `);
+	if (aircraft.registration && (aircraft.registration.trim() != aircraft.callsign?.trim())) {
+		title.push(`· ${aircraft.registration} · `);
 	}
 
 	if (aircraft.callsign) {

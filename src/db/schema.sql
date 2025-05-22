@@ -49,10 +49,11 @@ INSERT OR IGNORE INTO social_platforms (name) VALUES
 ('Bluesky');
 
 -- social posts
-CREATE TABLE IF NOT EXISTS flight_posts (
+CREATE TABLE IF NOT EXISTS social_posts (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     tracking_session_id INTEGER,
     platform_id INTEGER,
+    channel TEXT,
     title TEXT,
     message TEXT,
     status TEXT,                    -- e.g., 'posted', 'failed', 'queued'
