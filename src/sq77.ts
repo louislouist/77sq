@@ -6,7 +6,7 @@ import { Database } from "sqlite";
 import { dbQueue } from "./db/queue/dbQueue";
 import { SquawkText, titleBuilder } from "./social/titleBuilder";
 import { ADSBResponse, Aircraft } from "./types";
-import { writeRandomTextFile } from "./etc/writeRandomTextFile";
+import { dbCreateRedditPost } from "./db/dbCreateRedditPost";
 
 let running = true;
 
@@ -88,7 +88,6 @@ async function updateTrackedAircraft(
 ): Promise<void> {
 	console.log("updating tracked: ", flight.hex);
 	logAircraftInfo(flight);
-
 	const index = tracking.findIndex(tracked => tracked.hex === flight.hex);
 	if (index !== -1) {
 		tracking[index].count += 1;
@@ -101,7 +100,16 @@ async function updateTrackedAircraft(
 		console.log("============debugging tracking=========");
 		console.log(`session_id: ${sessionId}, seqNr: ${seqNr}`);
 
+		// Add tracking session update to queue
 		dbQueue.add(() => dbSingleAircraftTracking(db, flight, sessionId, seqNr));
+
+		// If we've tracked this aircraft exactly 3 times, create Reddit post
+		if (tracking[index].count === 3) {
+			const subreddit = 'squawk7700'; // Set your target subreddit
+			const postContent = `Flight details for ${flight.flight || flight.r || flight.hex}`;
+
+			dbQueue.add(() => dbCreateRedditPost(db, flight, sessionId, tracking[index].count, subreddit, postContent));
+		}
 	}
 }
 
@@ -135,23 +143,23 @@ async function postToSocial(
 /**
  * Creates social media post for new aircraft
  */
-async function createSocialPost(flight: Aircraft): Promise<void> {
-	const sqTxt: SquawkText = {
-		registration: flight.r,
-		equipment: flight.t,
-		callsign: flight.flight,
-		hex: flight.hex,
-		lat: flight.lat ?? flight.rr_lat,
-		lon: flight.lon ?? flight.rr_lon
-	};
-
-	const postTitle = titleBuilder(sqTxt);
-	if (postTitle) {
-		console.log(postTitle);
-		await writeRandomTextFile(postTitle);
-
-	}
-}
+// async function createSocialPost(flight: Aircraft): Promise<void> {
+// 	const sqTxt: SquawkText = {
+// 		registration: flight.r,
+// 		equipment: flight.t,
+// 		callsign: flight.flight,
+// 		hex: flight.hex,
+// 		lat: flight.lat ?? flight.rr_lat,
+// 		lon: flight.lon ?? flight.rr_lon
+// 	};
+//
+// 	const postTitle = titleBuilder(sqTxt);
+// 	if (postTitle) {
+// 		console.log(postTitle);
+// 		await writeRandomTextFile(postTitle);
+//
+// 	}
+// }
 
 /**
  * Adds new aircraft to tracking
@@ -181,7 +189,6 @@ async function addNewTrackedAircraft(
 	dbQueue.add(() => dbSingleAircraftTracking(db, flight, trackingId, 1));
 
 	// Create social media post
-	createSocialPost(flight);
 }
 
 /**

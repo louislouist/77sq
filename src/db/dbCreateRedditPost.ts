@@ -14,7 +14,7 @@ import { createSocialPost } from '../social/createSocialPost';
  * @param postContent The content/body of the Reddit post
  * @returns Promise<void>
  */
-async function createRedditPost(
+export async function dbCreateRedditPost(
 	db: Database,
 	flight: Aircraft,
 	trackingId: string,
