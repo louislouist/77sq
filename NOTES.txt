@@ -1,5 +1,5 @@
 TODO::i
-
+cleanup dbRedditPost factor out the the createSocialPost redundancies.
 Squawk 7700 callsign:  hex: fac688 near: LIEE: Cagliari Elmas Airport reported.# Add a newline after each file
 
 handle nav_modes when the flight goes into approach.

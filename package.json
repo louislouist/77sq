@@ -6,7 +6,8 @@
     "build": "tsc && cp src/db/schema.sql dist/db/schema.sql",
     "clean": "rm -rf dist/*",
     "start": "node dist/index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "npmLocal": "need to build airport utils and postreddit"
   },
   "keywords": [],
   "author": "",
@@ -21,8 +22,9 @@
     "typescript": "^5.8.3"
   },
   "dependencies": {
-    "closest-airport-static-utils": "github:louislouist/closest-airport-static-utils",
+    "closest-airport-static-utils": "git+http://github.com/louislouist/closest-airport-static-utils.git",
     "express": "^5.1.0",
+    "postreddit": "git+http://github.com/louislouist/postreddit.git",
     "sqlite": "^5.1.1",
     "sqlite3": "^5.1.7",
     "uuid": "^11.1.0"
