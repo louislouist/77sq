@@ -1,3 +1,4 @@
+import { RedditPoster } from "postreddit";
 import { getDB } from "./db/db";
 import { startServer, stopServer } from "./server";
 import { sq77, stopSq77 } from "./sq77";
@@ -11,6 +12,10 @@ async function main() {
 	if (!db) { return };
 
 	startServer(db);
+
+	if (RedditPoster.isConfigured()) {
+		console.log("Reddit Posting Configured");
+	}
 
 	startSq77 = true;
 	sq77(db).catch((err) => {

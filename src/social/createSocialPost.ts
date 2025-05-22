@@ -18,9 +18,11 @@ export async function createSocialPost(flight: Aircraft): Promise<string | null>
 		return null;
 	} else {
 		console.log(postTitle);
-		await writeRandomTextFile(postTitle);
+		try {
+			await writeRandomTextFile(postTitle);
+		} catch (err) {
+			console.error("Error writing postTitle to file: ", err);
+		}
 		return postTitle;
-
-
 	}
 }

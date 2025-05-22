@@ -1,6 +1,10 @@
-TODO::i
+TODO::
+npm build in "scripts"
+postContent for reddit.
+	flightaware.
+	aiport radio.
+	full data from Aircraft.
 cleanup dbRedditPost factor out the the createSocialPost redundancies.
-Squawk 7700 callsign:  hex: fac688 near: LIEE: Cagliari Elmas Airport reported.# Add a newline after each file
 
 handle nav_modes when the flight goes into approach.
 ::Add reddit support
@@ -10,17 +14,9 @@ add telegram support.
 https://www.liveatc.net/search/?icao=KLAX
 https://adsb.lol/?icao=a8dc3a
 
-::clean up sq77()
-	modularize everything to allow adding fetch types to track any code or aircraft.
-
-debug console items.
+::debug console items.
 
 ::write to sqlite.
-	reddit post info.
-	id, message, image_name, link, url, post_id, posted, created, updated
-	test fetch offline and see what error is produced.
-	errors (id, error_code, type, message, date)
-		fetch, db_write(when hex exists but other items are different)
 
 
 add express display info page.
@@ -97,3 +93,13 @@ https://www.reddit.com/prefs/apps
 Use Snoowrap to for reddit posting.
 	npm install snoowrap dotenv
 Write something to handle soc posting sentence. Need something that will handle all the optional data returned from adsb.lol.
+Squawk 7700 callsign:  hex: fac688 near: LIEE: Cagliari Elmas Airport reported.# Add a newline after each file
+::clean up sq77(
+	modularize everything to allow adding fetch types to track any code or aircraft.
+db
+	reddit post info.
+	id, message, image_name, link, url, post_id, posted, created, updated
+	test fetch offline and see what error is produced.
+	errors (id, error_code, type, message, date)
+		fetch, db_write(when hex exists but other items are different)
+

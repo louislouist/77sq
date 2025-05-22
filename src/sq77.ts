@@ -7,6 +7,7 @@ import { dbQueue } from "./db/queue/dbQueue";
 import { SquawkText, titleBuilder } from "./social/titleBuilder";
 import { ADSBResponse, Aircraft } from "./types";
 import { dbCreateRedditPost } from "./db/dbCreateRedditPost";
+import { RedditPoster } from "postreddit";
 
 let running = true;
 
@@ -86,9 +87,16 @@ async function updateTrackedAircraft(
 	tracking: Tracker[],
 	now: number
 ): Promise<void> {
-	console.log("updating tracked: ", flight.hex);
+	const hex = flight.hex?.toUpperCase();
+	if (!hex) {
+		console.error("updatedTrackedAircraft(): missing hexCode!");
+		return;
+	}
+
+	console.log("updating tracked: ", hex);
+
 	logAircraftInfo(flight);
-	const index = tracking.findIndex(tracked => tracked.hex === flight.hex);
+	const index = tracking.findIndex(tracked => tracked.hex === hex);
 	if (index !== -1) {
 		tracking[index].count += 1;
 		tracking[index].lastSeen = now;
@@ -105,10 +113,11 @@ async function updateTrackedAircraft(
 
 		// If we've tracked this aircraft exactly 3 times, create Reddit post
 		if (tracking[index].count === 3) {
-			const subreddit = 'squawk7700'; // Set your target subreddit
-			const postContent = `Flight details for ${flight.flight || flight.r || flight.hex}`;
-
-			dbQueue.add(() => dbCreateRedditPost(db, flight, sessionId, tracking[index].count, subreddit, postContent));
+			if (RedditPoster.isConfigured()) {
+				const subreddit = 'squawk7700'; // Set your target subreddit
+				const postContent = `Flight details for ${flight.flight || flight.r || flight.hex}`;
+				dbQueue.add(() => dbCreateRedditPost(db, flight, sessionId, tracking[index].count, subreddit, postContent));
+			}
 		}
 	}
 }
@@ -173,9 +182,15 @@ async function addNewTrackedAircraft(
 ): Promise<void> {
 	const trackingId = uuidv4();
 
+	const hex = flight.hex?.toUpperCase();
+	if (!hex || tracking.some(t => t.hex === hex)) {
+		console.error("addNewTrackedAircraft(): missing hex!");
+		return;
+	}
+
 	tracking.push({
 		id: trackingId,
-		hex: flight.hex!,
+		hex: hex,
 		count: 1,
 		lastSeen: now,
 	});
@@ -201,14 +216,23 @@ async function processCurrentAircraft(
 	now: number,
 	timestamp: string
 ): Promise<void> {
-	if (!adsb?.ac) return;
+	if (!adsb?.ac) { return; }
+
+	const seen = new Set<string>();
+
 
 	for (const flight of adsb.ac) {
 		// Validate aircraft
 		if (!validateAircraft(flight)) continue;
 
+		const hex = flight.hex?.toUpperCase();
+		if (!hex || seen.has(hex)) continue;
+		seen.add(hex);
+
+		flight.hex = hex;
+
 		// Check if aircraft is already being tracked
-		const isTracked = tracking.some(tracked => tracked.hex === flight.hex);
+		const isTracked = tracking.some(tracked => tracked.hex === hex);
 
 		if (isTracked) {
 			await updateTrackedAircraft(db, flight, tracking, now);
