@@ -8,6 +8,8 @@ import { SquawkText, titleBuilder } from "./social/titleBuilder";
 import { ADSBResponse, Aircraft } from "./types";
 import { dbCreateRedditPost } from "./db/dbCreateRedditPost";
 import { RedditPoster } from "postreddit";
+import { writeRandomTextFile } from "./etc/writeRandomTextFile";
+import { simpleRedditPost } from "./social/simpleRedditPost";
 
 let running = true;
 
@@ -114,9 +116,13 @@ async function updateTrackedAircraft(
 		// If we've tracked this aircraft exactly 3 times, create Reddit post
 		if (tracking[index].count === 3) {
 			if (RedditPoster.isConfigured()) {
-				const subreddit = 'squawk7700'; // Set your target subreddit
-				const postContent = `Flight details for ${flight.flight || flight.r || flight.hex}`;
-				dbQueue.add(() => dbCreateRedditPost(db, flight, sessionId, tracking[index].count, subreddit, postContent));
+				//debug
+				console.log("RedditPoster configured()");
+				//endDebug
+				// const subreddit = 'squawk7700'; // Set your target subreddit
+				// const postContent = `Flight details for ${flight.flight || flight.r || flight.hex}`;
+				// dbQueue.add(() => dbCreateRedditPost(db, flight, sessionId, tracking[index].count, subreddit, postContent));
+				await simpleRedditPost(flight);
 			}
 		}
 	}
@@ -247,8 +253,11 @@ async function processCurrentAircraft(
  */
 function cleanupExpiredTracking(tracking: Tracker[], oneHourAgo: number, timestamp: string): void {
 	for (let i = tracking.length - 1; i >= 0; i--) {
+		let hex = tracking[i].hex.toUpperCase();
+		let sessionId = tracking[i].id;
+
 		if (tracking[i].lastSeen <= oneHourAgo) {
-			console.log(`${timestamp}: removing session ${tracking[i].id}. hex: ${tracking[i].hex}`);
+			console.log(`${timestamp}: removing session ${sessionId}. hex: ${hex}`);
 			tracking.splice(i, 1);
 		}
 	}

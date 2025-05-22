@@ -23,7 +23,9 @@ export async function dbCreateRedditPost(
 	postContent: string = ''
 ): Promise<void> {
 	// Only proceed if we've tracked this aircraft enough times
-	if (trackingCount < 3) return;
+	// if (trackingCount < 3) return;
+	//
+	console.log("dbCreateRedditPost(): tracking count: ", trackingCount);
 
 	// Generate post title from flight data
 	const postTitle = await createSocialPost(flight);
