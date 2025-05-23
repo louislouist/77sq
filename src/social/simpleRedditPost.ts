@@ -122,7 +122,7 @@ async function dbRedditPost(
 					db,
 					`INSERT INTO social_posts (tracking_session_id, platform_id, 
 					channel, title, message, external_id, status, error_message) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-					[tracking_session_id, platform_id, subreddit, title, message, url, status, error_message]
+					[tracking_session_id.id, platform_id.id, subreddit, title, message, url, status, error_message]
 				);
 
 			}
