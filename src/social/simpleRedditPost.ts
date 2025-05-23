@@ -4,7 +4,7 @@ import { createSocialPost } from "./createSocialPost";
 import { writeRandomTextFile } from "../etc/writeRandomTextFile";
 import { dbQueue } from "../db/queue/dbQueue";
 import { Database } from "sqlite";
-import { buildAircraftInfoText } from "./infoBuilder";
+import { buildAircraftInfoText, buildAircraftInfoTextRMD } from "./infoBuilder";
 
 export async function simpleRedditPost(flight: Aircraft): Promise<void> {
 	const postTitle = await createSocialPost(flight);
@@ -49,7 +49,7 @@ export async function redditPoster(
 	}
 
 	const subreddit = "squawk7700";
-	const postContent = buildAircraftInfoText(flight);
+	const postContent = buildAircraftInfoTextRMD(flight);
 
 	try {
 		console.log(`Posting to Reddit: r/${subreddit}`);
