@@ -36,15 +36,55 @@ export async function simpleRedditPost(flight: Aircraft): Promise<void> {
 }
 
 
+export async function redditPoster(
+	db: Database,
+	flight: Aircraft,
+	sessionId: string
+): Promise<void> {
+	const postTitle = await createSocialPost(flight);
+	if (!postTitle) {
+		console.log("redditPost(): missing postTitle")
+		return;
+	}
+
+	const subreddit = "squawk7700";
+	const postContent = "";
+
+	try {
+		console.log(`Posting to Reddit: r/${subreddit}`);
+		const redditUrl = await RedditPoster.postText(subreddit, postTitle, postContent);
+
+		if (redditUrl) {
+			// write to db as posted with url
+			writeRandomTextFile(redditUrl);
+			const status = "posted";
+			await dbRedditPost(db, sessionId, subreddit, postTitle, status, redditUrl, postContent);
+		} else {
+			// write to db as failed.
+			const status = "failed";
+			const err = "Error: unable to post to reddit!"
+			const external_id = ""
+			writeRandomTextFile("missing redditUrl");
+
+			await dbRedditPost(db, sessionId, subreddit, postTitle, status, external_id, postContent, err);
+		}
+
+	} catch (error) {
+		console.error("RedditPoster failed: ", error)
+		writeRandomTextFile(`error in reddit poster: ${error}`);
+	}
+}
+
+
 // TODO: move to db/
 async function dbRedditPost(
 	db: Database,
 	sessionId: string,
-	url?: string,
 	subreddit: string,
 	title: string,
-	message?: string,
 	status: string,
+	url?: string,
+	message?: string,
 	error_message?: string
 ) {
 	// TODO: handle when RedditPoster fails: status "failed", error_message: error
@@ -87,6 +127,10 @@ async function dbRedditPost(
 
 			}
 		}
+	} catch (error) {
+		console.error("dbPostReddit(): ", error);
+		// debug
+		writeRandomTextFile(`dbPostReddit(${sessionId}): ${error}`);
 	}
 
 }

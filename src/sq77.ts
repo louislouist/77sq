@@ -9,7 +9,7 @@ import { ADSBResponse, Aircraft } from "./types";
 import { dbCreateRedditPost } from "./db/dbCreateRedditPost";
 import { RedditPoster } from "postreddit";
 import { writeRandomTextFile } from "./etc/writeRandomTextFile";
-import { simpleRedditPost } from "./social/simpleRedditPost";
+import { redditPoster, simpleRedditPost } from "./social/simpleRedditPost";
 
 let running = true;
 
@@ -122,7 +122,8 @@ async function updateTrackedAircraft(
 				// const subreddit = 'squawk7700'; // Set your target subreddit
 				// const postContent = `Flight details for ${flight.flight || flight.r || flight.hex}`;
 				// dbQueue.add(() => dbCreateRedditPost(db, flight, sessionId, tracking[index].count, subreddit, postContent));
-				await simpleRedditPost(flight);
+				await redditPoster(db, flight, sessionId);
+				// await simpleRedditPost(flight);
 			}
 		}
 	}
