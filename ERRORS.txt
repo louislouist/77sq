@@ -1,3 +1,19 @@
+Failed to fetch emergency squawk data: TypeError: fetch failed
+    at node:internal/deps/undici/undici:13510:13
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async fetchADSB (/Users/ltrump/src/7700/77sq/dist/fetchADSB.js:7:26)
+    at async sq77 (/Users/ltrump/src/7700/77sq/dist/sq77.js:237:22) {
+  [cause]: ConnectTimeoutError: Connect Timeout Error (attempted address: api.adsb.lol:443, timeout: 10000ms)
+      at onConnectTimeout (node:internal/deps/undici/undici:2602:28)
+      at Immediate._onImmediate (node:internal/deps/undici/undici:2583:11)
+      at process.processImmediate (node:internal/timers:505:21) {
+    code: 'UND_ERR_CONNECT_TIMEOUT'
+  }
+}
+
+
+
+
 dbCreateRedditPost(): tracking count:  3
 Squawk 7700 N755US hex: AA2E6F (A319) near: KAUS: Austin Bergstrom International Airport reported.
 db: Preparing Reddit post with title: Squawk 7700 N755US hex: AA2E6F (A319) near: KAUS: Austin Bergstrom International Airport reported.

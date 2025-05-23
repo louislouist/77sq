@@ -25,6 +25,10 @@ https://adsb.lol/?icao=a8dc3a
 
 add express display info page.
 
+:: ICAO Aircraft Type Designator Database
+https://github.com/kengreim/ICAO-Type-Designator-Scraper
+https://www.icao.int/Aviation-API-Data-Service/Pages/default.aspx
+
 
 telegram support:
 https://medium.com/@kondaurov.dev/typescript-client-for-telegram-bot-api-4dfd99ee1a92

@@ -12,7 +12,7 @@ export interface Aircraft {
 	type?: string;  // //Probably radio source type  ====Aircraft type (e.g., A320, B738)
 	flight?: string;  // Flight identifier (callsign)
 	r?: string;  // Registration number
-	t?: string;  // Aircraft type description
+	t?: string;  // Aircraft type description: ICAO Aircraft Type Designation
 	alt_baro?: number | string;  // Barometric altitude in feet
 	alt_geom?: number;  // Geometric (GPS-based) altitude in feet
 	gs?: number;  // Ground speed in knots
