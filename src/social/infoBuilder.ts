@@ -1,4 +1,4 @@
-import { findClosestAirports, loadAirports } from 'closest-airport-static-utils';
+import { findClosestAirports, loadAirports, Frequency } from 'closest-airport-static-utils';
 import { Aircraft } from '../types/adsb';
 
 export function buildAircraftInfoText(aircraft: Aircraft): string {
@@ -81,6 +81,17 @@ export function buildAircraftInfoTextRMD(aircraft: Aircraft): string {
 			info.push(`## **Flight Information: ${acName.trim()}**`)
 			const frUrl = getFlightRadar24Url(acName);
 			info.push(`[${acName} on flightradar24](${frUrl})`);
+
+			if (aircraft.flight) {
+				const faUrl = getFlightAwareUrl(aircraft.flight);
+				info.push(`[${aircraft.flight} on FightAware](${faUrl})`);
+			}
+
+			if (aircraft.hex) {
+				const adlolUrl = getAdsbLolUrl(aircraft.hex);
+				info.push(`[${aircraft.hex} on adsb.lol](${adlolUrl})`);
+			}
+
 		}
 	} else if (aircraft.hex !== undefined) {
 		const alolUrl = getAdsbLolUrl(aircraft.hex);
@@ -169,10 +180,42 @@ function getAirportInfo(lat: number, lon: number): string[] {
 
 }
 
+export function formatFrequenciesReddit(frequencies: Frequency[]): string {
+	if (!frequencies || frequencies.length === 0) {
+		return '*No radio information*';
+	}
+
+	const formattedCells = frequencies.map(f =>
+		`* ${f.type} (${f.description || 'N/A'}): *${f.mhz} MHz*`
+	);
+
+	const maxColumns = 4;
+	const maxRows = 3;
+	const maxItems = maxColumns * maxRows;
+	const tableRows: string[] = [];
+
+	for (let i = 0; i < Math.min(formattedCells.length, maxItems); i += maxColumns) {
+		const rowItems = formattedCells.slice(i, i + maxColumns);
+		while (rowItems.length < maxColumns) {
+			rowItems.push(''); // Pad to maintain column consistency
+		}
+		tableRows.push('| ' + rowItems.join(' | ') + ' |');
+	}
+
+	return tableRows.join('\n');
+}
+
+// URL builders
+//
 function getFlightRadar24Url(ac: string): string {
 	// callsign or registration
 	const acTrimmed = ac.trim();
 	return `https://www.flightradar24.com/${ac}`;
+}
+
+function getFlightAwareUrl(ac: string): string {
+	const acTrimmed = ac.trim();
+	return `https://www.flightaware.com/live/flight/${acTrimmed}`;
 }
 
 function getAdsbLolUrl(ac: string): string {
