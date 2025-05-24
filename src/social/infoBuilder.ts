@@ -78,7 +78,7 @@ export function buildAircraftInfoTextRMD(aircraft: Aircraft): string {
 	if (aircraft.r || aircraft.flight) {
 		const acName = aircraft.r ?? aircraft.flight;
 		if (acName) {
-			info.push(`##Flight Information: ${acName.trim()}`)
+			info.push(`## **Flight Information: ${acName.trim()}**`)
 			const frUrl = getFlightRadar24Url(acName);
 			info.push(`[${acName} on flightradar24](${frUrl})`);
 		}
@@ -103,7 +103,7 @@ export function buildAircraftInfoTextRMD(aircraft: Aircraft): string {
 	info.push(sqInfo.join(" "));
 	if (aircraft.type) info.push(`Message Type: *${aircraft.type}*`);
 
-	info.push("## Current Status")
+	info.push("## **Current Status:**")
 	if (aircraft.alt_baro !== undefined) info.push(`***Altitude (Baro)***: ${aircraft.alt_baro} ft`);
 	if (aircraft.alt_geom !== undefined) info.push(`***Altitude (Geom)***: ${aircraft.alt_geom} ft`);
 	if (aircraft.gs !== undefined) info.push(`***Ground Speed***: ${aircraft.gs} knots`);
@@ -143,12 +143,12 @@ function getAirportInfo(lat: number, lon: number): string[] {
 		return ["*Invalid airport data.*"];
 	}
 
-	airportInfo.push("## Nearby Airport(s) and Frequencies:")
+	airportInfo.push("## **Nearby Airport(s) and Frequencies:**")
 
 	if (closest.length > 0) {
 		closest.forEach(airport => {
 			const icaoName = airport.icao;
-			airportInfo.push(`###${airport.name} (${airport.iata || airport.icao})`);
+			airportInfo.push(`### ***${airport.name} (${airport.iata || airport.icao})***`);
 			if (icaoName && icaoName.trim() !== "") {
 				// NOTE: MD for reddit
 				airportInfo.push(`[LiveATC @${icaoName}](http://www.liveatc.net/search/?icao=${icaoName})`);
@@ -157,7 +157,7 @@ function getAirportInfo(lat: number, lon: number): string[] {
 			airportInfo.push(`***Frequencies***:`);
 			if (airport.frequencies && airport.frequencies.length > 0) {
 				airport.frequencies.slice(0, 3).forEach(f => {
-					airportInfo.push(`  ${f.type} (${f.description}): *${f.mhz} MHz*`);
+					airportInfo.push(`* ${f.type} (${f.description}): *${f.mhz} MHz*`);
 				});
 			}
 		});

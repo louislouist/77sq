@@ -1,14 +1,9 @@
 TODO::
 npm build in "scripts"
-postTitle needs check for when r and callsign ===;
-postContent for reddit.
-	flightaware.
-	aiport radio.
-	full data from Aircraft.
 cleanup dbRedditPost factor out the the createSocialPost redundancies.
 
 handle nav_modes when the flight goes into approach.
-::Add reddit support
+
 add express display info page.
 add telegram support.
 
@@ -32,6 +27,7 @@ https://www.icao.int/Aviation-API-Data-Service/Pages/default.aspx
 
 telegram support:
 https://medium.com/@kondaurov.dev/typescript-client-for-telegram-bot-api-4dfd99ee1a92
+chat_id: 888356967
 
 bluesky:
 
@@ -110,4 +106,9 @@ db
 	test fetch offline and see what error is produced.
 	errors (id, error_code, type, message, date)
 		fetch, db_write(when hex exists but other items are different)
+postTitle needs check for when r and callsign ===;
+postContent for reddit.
+	flightaware.
+	aiport radio.
+	full data from Aircraft.
 
