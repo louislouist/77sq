@@ -166,10 +166,9 @@ function getAirportInfo(lat: number, lon: number): string[] {
 			}
 			airportInfo.push(`***Region***: ${airport.regionName}`);
 			airportInfo.push(`***Frequencies***:`);
-			if (airport.frequencies && airport.frequencies.length > 0) {
-				airport.frequencies.slice(0, 3).forEach(f => {
-					airportInfo.push(`* ${f.type} (${f.description}): *${f.mhz} MHz*`);
-				});
+			if (airport.frequencies) {
+				const apFreqs = formatFrequenciesReddit(airport.frequencies);
+				airportInfo.push(apFreqs);
 			}
 		});
 	} else {
@@ -201,8 +200,7 @@ export function formatFrequenciesReddit(frequencies: Frequency[]): string {
 		}
 		tableRows.push('| ' + rowItems.join(' | ') + ' |');
 	}
-
-	return tableRows.join('\n');
+	return '\n' + tableRows.join('\n') + '\n';
 }
 
 // URL builders
