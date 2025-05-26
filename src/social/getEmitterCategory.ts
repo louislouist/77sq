@@ -18,17 +18,14 @@ const emitterCategoryMap: Record<number, string> = {
 };
 
 export function getEmitterCategoryInfo(input: string): string {
-	// Match pattern like "Category: A3"
-	const match = input.match(/Category:\s*A([0-9A-F])/i);
+	// Match patterns like "A3", "Category: A3", etc.
+	const match = input.match(/A([0-9A-F])/i);
 	if (!match) {
 		return "Emitter Category code not found or invalid format.";
 	}
 
 	const hexDigit = match[1];
 	const code = parseInt(hexDigit, 16);
-	if (isNaN(code) || code < 0 || code > 15) {
-		return "Invalid Emitter Category code.";
-	}
 
-	return emitterCategoryMap[code];
+	return emitterCategoryMap[code] ?? "Unknown Emitter Category.";
 }

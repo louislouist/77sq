@@ -85,13 +85,13 @@ export function buildAircraftInfoTextRMD(aircraft: Aircraft): string {
 	//
 
 	// header 
-	info.push(`## **Flight Information: ${regCallOrHex(aircraft)}`);
+	info.push(`## **Flight Information: ${regCallOrHex(aircraft)}**`);
 
 	const linkInfo: string[] = [];
 
 	if (aircraft.flight) {
 		const faUrl = getFlightAwareUrl(aircraft.flight);
-		linkInfo.push(`[${aircraft.flight.trim()} on FightAware](${faUrl}`);
+		linkInfo.push(`[${aircraft.flight.trim()} on FightAware](${faUrl})`);
 	}
 
 	if (aircraft.r) {
@@ -117,18 +117,19 @@ export function buildAircraftInfoTextRMD(aircraft: Aircraft): string {
 	if (aircraft.t) info.push(`***Aircraft***: ${aircraft.t}: [doc8643.com](https://www.doc8643.com/aircraft/${aircraft.t})`);
 
 	if (aircraft.category) {
-		const categoryDescription = getEmitterCategoryInfo(aircraft.category)
+		const categoryDescription = getEmitterCategoryInfo(aircraft.category.trim())
 		info.push(`***Category***: ${aircraft.category}: (${categoryDescription})`);
 	}
 
 	// Squawk Info
 	let sqInfo: string[] = [];
 	if (aircraft.squawk) sqInfo.push(`***Squawk***: ${aircraft.squawk}`);
-	if (aircraft.emergency) sqInfo.push(`Emergency: ${aircraft.emergency}`);
-	if (aircraft.type) sqInfo.push(`Message Type: *${aircraft.type}*`);
+	if (aircraft.emergency) sqInfo.push(`***Emergency***: ${aircraft.emergency}`);
+	if (aircraft.type) sqInfo.push(`***Message Type***: *${aircraft.type}*`);
 	info.push(sqInfo.join(" "));
 
 	info.push("## **Current Status:**")
+	// TODO: handle alt_baro === "ground"
 	if (aircraft.alt_baro !== undefined) info.push(`***Altitude (Baro)***: ${aircraft.alt_baro} ft`);
 	if (aircraft.alt_geom !== undefined) info.push(`***Altitude (Geom)***: ${aircraft.alt_geom} ft`);
 	if (aircraft.gs !== undefined) info.push(`***Ground Speed***: ${aircraft.gs} knots`);
@@ -146,7 +147,7 @@ export function buildAircraftInfoTextRMD(aircraft: Aircraft): string {
 	// needs seperate push before return due to newline formatting.
 	const airportInfo: string[] = [];
 	if (aircraft.lat !== undefined && aircraft.lon !== undefined) {
-		airportInfo.push(`***Position***: ${aircraft.lat.toFixed(4)}, ${aircraft.lon.toFixed(4)}\n`);
+		info.push(`***Position***: ${aircraft.lat.toFixed(4)}, ${aircraft.lon.toFixed(4)}\n`);
 		const airportData = getAirportInfo(aircraft.lat, aircraft.lon);
 		airportData.forEach((line) => {
 			airportInfo.push(line);
@@ -181,10 +182,12 @@ function getAirportInfo(lat: number, lon: number): string[] {
 	if (closest.length > 0) {
 		closest.forEach(airport => {
 			const icaoName = airport.icao;
-			airportInfo.push(`### ***${airport.name} (${airport.iata || airport.icao})***\n`);
+			airportInfo.push(`### ***${airport.name} (${airport.iata || airport.icao})***`);
 			if (icaoName && icaoName.trim() !== "") {
 				// NOTE: MD for reddit
-				airportInfo.push(`[LiveATC @${icaoName}](http://www.liveatc.net/search/?icao=${icaoName})\n`);
+				airportInfo.push(` [LiveATC @${icaoName}](http://www.liveatc.net/search/?icao=${icaoName})\n`);
+			} else {
+				airportInfo.push('\n')
 			}
 			airportInfo.push(`***Region***: ${airport.regionName}\n`);
 			airportInfo.push(`***Frequencies***:\n`);
@@ -222,7 +225,7 @@ export function formatFrequenciesReddit(frequencies: Frequency[]): string {
 		tableRows.push(freqRow);
 	})
 
-	return '\n' + tableRows.join('') + '\n';
+	return '\n' + tableRows.join('\n') + '\n';
 }
 
 
