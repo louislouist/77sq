@@ -62,8 +62,8 @@ export function buildAircraftInfoText(aircraft: Aircraft): string {
 	// if (aircraft.seen !== undefined) info.push(`Last Seen: ${aircraft.seen} sec ago`);
 	// if (aircraft.rssi !== undefined) info.push(`Signal Strength: ${aircraft.rssi}`);
 
-	// NOTE: double \n for reddit formting.
-	return info.join('\n\n');
+	// NOTE: SINGLE \n formting.
+	return info.join('\n');
 }
 
 function regCallOrHex(ac: Aircraft): string {
@@ -129,8 +129,13 @@ export function buildAircraftInfoTextRMD(aircraft: Aircraft): string {
 	info.push(sqInfo.join(" "));
 
 	info.push("## **Current Status:**")
-	// TODO: handle alt_baro === "ground"
-	if (aircraft.alt_baro !== undefined) info.push(`***Altitude (Baro)***: ${aircraft.alt_baro} ft`);
+	if (aircraft.alt_baro !== undefined) {
+		if (aircraft.alt_baro === "ground") {
+			info.push("***Altitude (Baro)***: Aircraft Landed");
+		} else {
+			info.push(`***Altitude (Baro)***: ${aircraft.alt_baro} ft`);
+		}
+	}
 	if (aircraft.alt_geom !== undefined) info.push(`***Altitude (Geom)***: ${aircraft.alt_geom} ft`);
 	if (aircraft.gs !== undefined) info.push(`***Ground Speed***: ${aircraft.gs} knots`);
 	if (aircraft.track !== undefined) info.push(`***Track***: ${aircraft.track}°`);
@@ -189,7 +194,7 @@ function getAirportInfo(lat: number, lon: number): string[] {
 			} else {
 				airportInfo.push('\n')
 			}
-			airportInfo.push(`***Region***: ${airport.regionName}\n`);
+			airportInfo.push(`***Location***: ${airport.regionName}\n`);
 			airportInfo.push(`***Frequencies***:\n`);
 			if (airport.frequencies) {
 				const apFreqs = formatFrequenciesReddit(airport.frequencies);
