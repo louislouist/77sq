@@ -1,6 +1,6 @@
 import { findClosestAirports, loadAirports, Frequency } from 'closest-airport-static-utils';
 import { Aircraft } from '../types/adsb';
-import { getEmitterCategoryInfo } from './getEmitterCategory';
+import { getEmitterCategoryInfo, findDesignationByICAO } from 'icao-designation';
 
 export function buildAircraftInfoText(aircraft: Aircraft): string {
 	const info: string[] = [];
@@ -114,7 +114,16 @@ export function buildAircraftInfoTextRMD(aircraft: Aircraft): string {
 	info.push(acInfo.join(' '))
 
 	// Aircraft Type :: Catagory writeup.
-	if (aircraft.t) info.push(`***Aircraft***: ${aircraft.t}: [doc8643.com](https://www.doc8643.com/aircraft/${aircraft.t})`);
+	if (aircraft.t) {
+		const icaoInfo = findDesignationByICAO(aircraft.t);
+		let winkInfo = "";
+
+		if (icaoInfo != null) {
+			winkInfo = `[${icaoInfo.model}](${icaoInfo.modelLink}) `
+		}
+
+		info.push(`***Aircraft***: ${aircraft.t}: ${winkInfo} [doc8643.com](https://www.doc8643.com/aircraft/${aircraft.t})`);
+	}
 
 	if (aircraft.category) {
 		const categoryDescription = getEmitterCategoryInfo(aircraft.category.trim())

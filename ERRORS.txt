@@ -1,3 +1,14 @@
+RedditPoster configured()
+Squawk 7700 · G-EUYF · callsign: BAW65TY hex: 40615B (A320) near: LFPG: Charles de Gaulle International Airport reported.
+Posting to Reddit: r/squawk7700
+(node:59526) TimeoutNegativeWarning: -Infinity is a negative number.
+Timeout duration was set to 1.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Text post submitted: [object Promise]
+
+
+
+
 Failed to fetch emergency squawk data: TypeError: fetch failed
     at node:internal/deps/undici/undici:13510:13
     at process.processTicksAndRejections (node:internal/process/task_queues:105:5)

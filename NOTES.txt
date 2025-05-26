@@ -1,5 +1,17 @@
 TODO::
-npm build in "scripts"
+rm src/social/getEmitterCategory.ts
+telegram support:
+	https://medium.com/@kondaurov.dev/typescript-client-for-telegram-bot-api-4dfd99ee1a92
+	chat_id: 888356967
+
+Express::
+	Express routes for viewing aircraft.
+	add express display info page.
+
+bluesky:
+
+X:
+
 cleanup dbRedditPost factor out the the createSocialPost redundancies.
 
 handle nav_modes when the flight goes into approach.
@@ -15,27 +27,11 @@ https://adsb.lol/?icao=a8dc3a
 ::write to sqlite.
 
 ::postreddit
+	https://www.planespotters.net/search?q=64-14841
 	throw errors instead of returning null.
 		add error message to flight_posts.error_message and set status to failed.
 
-add express display info page.
 
-:: ICAO Aircraft Type Designator Database
-https://github.com/kengreim/ICAO-Type-Designator-Scraper
-https://www.icao.int/Aviation-API-Data-Service/Pages/default.aspx
-
-
-telegram support:
-https://medium.com/@kondaurov.dev/typescript-client-for-telegram-bot-api-4dfd99ee1a92
-chat_id: 888356967
-
-bluesky:
-
-X:
-
-
-
-Express routes for viewing aircraft.
 
 API info:
 Mapping
@@ -46,9 +42,6 @@ https://www.adsbexchange.com/emitter-category-ads-b-do-260b-2-2-3-2-5-2/
 	Aircraft Types
 	https://www.ads-b.nl/index.php?pageno=1502
 
-Closest Airports
-https://developers.amadeus.com/self-service/category/flights/api-doc/airport-nearest-relevant/api-reference
-https://aviation-edge.com/nearby-airport-and-city-api/
 
 Reminders::
 via indexing 
@@ -111,4 +104,11 @@ postContent for reddit.
 	flightaware.
 	aiport radio.
 	full data from Aircraft.
+npm build in "scripts"
+:: ICAO Aircraft Type Designator Database
+	https://github.com/kengreim/ICAO-Type-Designator-Scraper
+	https://www.icao.int/Aviation-API-Data-Service/Pages/default.aspx
+Closest Airports
+	https://developers.amadeus.com/self-service/category/flights/api-doc/airport-nearest-relevant/api-reference
+	https://aviation-edge.com/nearby-airport-and-city-api/
 
