@@ -17,6 +17,8 @@ interface Tracker {
 	id: string;
 	hex: string;
 	count: number;
+	ground: boolean;
+	approach: boolean;
 	lastSeen: number;  // Unix epoch Date.now();
 }
 
@@ -53,7 +55,7 @@ function logTrackedFlights(tracking: Tracker[]): void {
 	if (tracking.length > 0) {
 		console.log("flight(s) still in tracking:");
 		tracking.forEach(ac => {
-			console.log(`   sessionId:${ac.id} hex: ${ac.hex}, count: ${ac.count}, last seen: ${formatDateEpoch(ac.lastSeen)}`);
+			console.log(`   sessionId:${ac.id} hex: ${ac.hex}, count: ${ac.count}, ground: ${ac.ground}, approach: ${ac.approach}, last seen: ${formatDateEpoch(ac.lastSeen)}`);
 		});
 	}
 }
@@ -126,56 +128,21 @@ async function updateTrackedAircraft(
 				// await simpleRedditPost(flight);
 			}
 		}
+
+		// ground or approach update tracking and socials
+		if (tracking[index].count > 3) {
+			// update ground
+			if (flight.alt_baro === "ground") {
+				// write to social and update
+				tracking[index].ground = true;
+			}
+			// update approach
+			if (flight.nav_modes?.includes("approach")) {
+				tracking[index].approach = true;
+			}
+		}
 	}
 }
-
-async function postToSocial(
-	db: Database,
-	flight: Aircraft,
-	tracking: Tracker,
-): Promise<void> {
-	if (tracking.count < 3) {
-		console.error("postToSocial(): tracking count < 3: ", tracking.count.toString());
-		return;
-	}
-
-	const sqTxt: SquawkText = {
-		registration: flight.r,
-		equipment: flight.t,
-		callsign: flight.flight,
-		hex: flight.hex,
-		lat: flight.lat ?? flight.rr_lat,
-		lon: flight.lon ?? flight.rr_lon
-	};
-
-	const postTitle = titleBuilder(sqTxt);
-	if (!postTitle) {
-		console.error("postToSocial(): no post title: ", flight.hex)
-		return;
-	}
-
-}
-
-/**
- * Creates social media post for new aircraft
- */
-// async function createSocialPost(flight: Aircraft): Promise<void> {
-// 	const sqTxt: SquawkText = {
-// 		registration: flight.r,
-// 		equipment: flight.t,
-// 		callsign: flight.flight,
-// 		hex: flight.hex,
-// 		lat: flight.lat ?? flight.rr_lat,
-// 		lon: flight.lon ?? flight.rr_lon
-// 	};
-//
-// 	const postTitle = titleBuilder(sqTxt);
-// 	if (postTitle) {
-// 		console.log(postTitle);
-// 		await writeRandomTextFile(postTitle);
-//
-// 	}
-// }
 
 /**
  * Adds new aircraft to tracking
@@ -199,6 +166,8 @@ async function addNewTrackedAircraft(
 		id: trackingId,
 		hex: hex,
 		count: 1,
+		ground: false,
+		approach: false,
 		lastSeen: now,
 	});
 

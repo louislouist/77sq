@@ -166,7 +166,7 @@ export function buildAircraftInfoTextRMD(aircraft: Aircraft): string {
 		airportData.forEach((line) => {
 			airportInfo.push(line);
 		});
-	} else {
+	} else if (aircraft.rr_lon !== undefined && aircraft.rr_lon !== undefined) {
 		info.push(`***Rough Position***: ${aircraft.rr_lat.toFixed(4)}, ${aircraft.rr_lon.toFixed(4)}\n`);
 		const airportData = getAirportInfo(aircraft.rr_lat, aircraft.rr_lon);
 		airportData.forEach((line) => {

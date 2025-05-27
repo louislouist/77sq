@@ -1,3 +1,16 @@
+============debugging tracking=========
+session_id: 1c00f877-d996-4d11-a6f1-2f7ade022e5c, seqNr: 3
+RedditPoster configured()
+Squawk 7700 · 23-03516 · callsign: R33516 hex: AF85FC (H64) reported.
+sq77() error:  TypeError: Cannot read properties of undefined (reading 'toFixed')
+    at buildAircraftInfoTextRMD (/Users/ltrump/src/7700/77sq/dist/social/infoBuilder.js:174:60)
+    at redditPoster (/Users/ltrump/src/7700/77sq/dist/social/simpleRedditPost.js:44:68)
+    at async updateTrackedAircraft (/Users/ltrump/src/7700/77sq/dist/sq77.js:100:17)
+    at async processCurrentAircraft (/Users/ltrump/src/7700/77sq/dist/sq77.js:189:13)
+    at async sq77 (/Users/ltrump/src/7700/77sq/dist/sq77.js:250:9)
+
+
+
 RedditPoster configured()
 Squawk 7700 · G-EUYF · callsign: BAW65TY hex: 40615B (A320) near: LFPG: Charles de Gaulle International Airport reported.
 Posting to Reddit: r/squawk7700

@@ -111,4 +111,5 @@ npm build in "scripts"
 Closest Airports
 	https://developers.amadeus.com/self-service/category/flights/api-doc/airport-nearest-relevant/api-reference
 	https://aviation-edge.com/nearby-airport-and-city-api/
+rm file from dist/data/ to check if needed. should be checking from the library but...
 
