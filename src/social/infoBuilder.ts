@@ -1,4 +1,4 @@
-import { findClosestAirports, loadAirports, Frequency } from 'closest-airport-static-utils';
+import { findClosestAirports, loadAirports, Frequency, liveATCExistsByICAO } from 'closest-airport-static-utils';
 import { Aircraft } from '../types/adsb';
 import { getEmitterCategoryInfo, findDesignationByICAO } from 'icao-designation';
 
@@ -197,13 +197,21 @@ function getAirportInfo(lat: number, lon: number): string[] {
 		closest.forEach(airport => {
 			const icaoName = airport.icao;
 			airportInfo.push(`### ***${airport.name} (${airport.iata || airport.icao})***`);
+			if (airport.wikipedia) {
+				airportInfo.push(` [${airport.iata || airport.icao} Wikipedia](${airport.wikipedia})\n`)
+			}
 			if (icaoName && icaoName.trim() !== "") {
 				// NOTE: MD for reddit
-				airportInfo.push(` [LiveATC @${icaoName}](http://www.liveatc.net/search/?icao=${icaoName})\n`);
+				//
+				// check if icao is in live atc
+				if (liveATCExistsByICAO(icaoName.trim())) {
+					airportInfo.push(` [LiveATC @${icaoName}](http://www.liveatc.net/search/?icao=${icaoName})\n`);
+				}
 			} else {
 				airportInfo.push('\n')
 			}
-			airportInfo.push(`***Location***: ${airport.regionName}\n`);
+			airportInfo.push(`***Location***: ${airport.regionName}`);
+			airportInfo.push(` (${airport.country})\n`)
 			airportInfo.push(`***Frequencies***:\n`);
 			if (airport.frequencies) {
 				const apFreqs = formatFrequenciesReddit(airport.frequencies);

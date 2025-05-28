@@ -1,5 +1,8 @@
 TODO::
-rm src/social/getEmitterCategory.ts
+add approaching and ground in tracking.
+add approach and on ground followup posts.
+
+rm src/social/getEmitterCategory.xx
 telegram support:
 	https://medium.com/@kondaurov.dev/typescript-client-for-telegram-bot-api-4dfd99ee1a92
 	chat_id: 888356967
@@ -112,4 +115,8 @@ Closest Airports
 	https://developers.amadeus.com/self-service/category/flights/api-doc/airport-nearest-relevant/api-reference
 	https://aviation-edge.com/nearby-airport-and-city-api/
 rm file from dist/data/ to check if needed. should be checking from the library but...
+update closest aiports
+	test fetch-data after build
+	try using liveATCExistsByICAO()
+	add country after airport location.
 

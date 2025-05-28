@@ -1,4 +1,5 @@
 import { findClosestAirports, loadAirports } from 'closest-airport-static-utils';
+import { findDesignationByICAO } from 'icao-designation';
 
 // Squwak 7700 {type} emergency. Registration {r}: ({t}): Call sign: {flight}: Near {city} (hex if no r or call.)
 
@@ -56,6 +57,60 @@ export function titleBuilder(aircraft: SquawkText): string | null {
 
 	return title.join("");
 }
+
+export function titleBuilderTelegram(aircraft: SquawkText): string | null {
+	if (!aircraft.hex && !aircraft.registration && !aircraft.callsign) {
+		return null;
+	}
+
+	const title: string[] = [];
+
+	title.push("Squawk 7700 ");
+
+	if (aircraft.registration && (aircraft.registration.trim() != aircraft.callsign?.trim())) {
+		title.push(`· ${aircraft.registration} · `);
+	}
+
+	if (aircraft.callsign) {
+		// TODO: see if this covers the cases where callsign is showing up without a string.
+		// belt & suspenders. 
+		const rawCallsign = aircraft.callsign;
+
+		if (typeof rawCallsign === "string") {
+			const trimmedCallsign = rawCallsign.trim();
+			if (trimmedCallsign.length > 0) {
+				title.push(`callsign: ${trimmedCallsign} `);
+			}
+		}
+	}
+
+	if (!aircraft.registration && !aircraft.callsign) {
+		title.push(`hex code: ${aircraft.hex} `)
+	} else {
+		title.push(`hex: ${aircraft.hex} `)
+	}
+
+	if (aircraft.equipment) {
+		const acInfo = findDesignationByICAO(aircraft.equipment);
+
+		if (acInfo) {
+			title.push(`(${acInfo.model})`);
+		} else {
+			title.push(`(${aircraft.equipment}) `);
+		}
+	}
+
+	if (aircraft.lat != null && aircraft.lon != null) {
+		// query closest city.
+		const nearport = largeAirportInfo(aircraft.lat, aircraft.lon);
+		title.push(`near: ${nearport} `);
+	}
+
+	title.push('reported.');
+
+	return title.join("");
+}
+
 
 function largeAirportInfo(lat: number, lon: number): string {
 	const airports = loadAirports();
