@@ -2,8 +2,10 @@ import { RedditPoster } from "postreddit";
 import { getDB } from "./db/db";
 import { startServer, stopServer } from "./server";
 import { sq77, stopSq77 } from "./sq77";
+import { TelegramBotManager } from "./social/TelegramBot";
 
 let startSq77 = false;
+let startTelegram = false;
 
 async function main() {
 	const db = await getDB();
@@ -15,6 +17,15 @@ async function main() {
 
 	if (RedditPoster.isConfigured()) {
 		console.log("Reddit Posting Configured");
+	}
+
+	if (TelegramBotManager.isConfigured()) {
+		console.log("Telegram Bot Configured.")
+		startTelegram = true;
+		TelegramBotManager.init();
+		TelegramBotManager.start();
+	} else {
+		console.log(`Telegram bot is not running.\nTo use Telegram bot, add appropriate TELEGRAM_BOT_TOKEN & TELEGRAM_CHANNEL_ID to your dotenv.`);
 	}
 
 	startSq77 = true;
@@ -35,13 +46,18 @@ async function shutdown() {
 		startSq77 = false;
 	}
 
+	if (startTelegram) {
+		await TelegramBotManager.shutdown()
+	}
+
 	await stopServer();
 	console.log("Shutdown complete.");
 	process.exit(0);
 
 }
 
-main().catch((err) => {
+main().catch(async (err) => {
 	console.error("Fatal error in main(): ", err);
+	await TelegramBotManager.shutdown();
 	process.exit(1);
 });

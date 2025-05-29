@@ -10,6 +10,7 @@ import { dbCreateRedditPost } from "./db/dbCreateRedditPost";
 import { RedditPoster } from "postreddit";
 import { writeRandomTextFile } from "./etc/writeRandomTextFile";
 import { redditPoster, simpleRedditPost } from "./social/simpleRedditPost";
+import { TelegramBotManager } from "./social/TelegramBot";
 
 let running = true;
 
@@ -138,6 +139,7 @@ async function updateTrackedAircraft(
 			}
 			// update approach
 			if (flight.nav_modes?.includes("approach")) {
+				// ‘althold’, ‘approch')?
 				tracking[index].approach = true;
 			}
 		}
@@ -180,6 +182,9 @@ async function addNewTrackedAircraft(
 	dbQueue.add(() => dbSingleAircraftTracking(db, flight, trackingId, 1));
 
 	// Create social media post
+	if (TelegramBotManager.isConfigured()) {
+		TelegramBotManager.sendToDefaultChannel(`icao hex: ${flight.hex}`);
+	}
 }
 
 /**

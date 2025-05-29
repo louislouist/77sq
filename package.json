@@ -24,6 +24,7 @@
   "dependencies": {
     "closest-airport-static-utils": "github:louislouist/closest-airport-static-utils",
     "express": "^5.1.0",
+    "grammy": "^1.36.3",
     "icao-designation": "git+http://github.com/louislouist/icaoDesignation.git",
     "postreddit": "git+http://github.com/louislouist/postreddit.git",
     "sqlite": "^5.1.1",
