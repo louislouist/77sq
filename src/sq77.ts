@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { dbSingleAircraftTracking } from "./db/dbSingleAircraftTracking";
 import { Database } from "sqlite";
 import { dbQueue } from "./db/queue/dbQueue";
-import { SquawkText, titleBuilder } from "./social/titleBuilder";
+import { SquawkText, titleBuilder, titleBuilderTelegram } from "./social/titleBuilder";
 import { ADSBResponse, Aircraft } from "./types";
 import { dbCreateRedditPost } from "./db/dbCreateRedditPost";
 import { RedditPoster } from "postreddit";
@@ -183,7 +183,12 @@ async function addNewTrackedAircraft(
 
 	// Create social media post
 	if (TelegramBotManager.isConfigured()) {
-		TelegramBotManager.sendToDefaultChannel(`icao hex: ${flight.hex}`);
+		const title = titleBuilderTelegram(flight);
+		if (title) {
+			await TelegramBotManager.sendToDefaultChannel(title);
+		} else {
+			await TelegramBotManager.sendToDefaultChannel(`Missing Title: icao hex: ${flight.hex}`);
+		}
 	}
 }
 

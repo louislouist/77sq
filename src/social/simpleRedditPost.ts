@@ -5,6 +5,7 @@ import { writeRandomTextFile } from "../etc/writeRandomTextFile";
 import { dbQueue } from "../db/queue/dbQueue";
 import { Database } from "sqlite";
 import { buildAircraftInfoText, buildAircraftInfoTextRMD } from "./infoBuilder";
+import { TelegramBotManager } from "./TelegramBot";
 
 export async function simpleRedditPost(flight: Aircraft): Promise<void> {
 	const postTitle = await createSocialPost(flight);
@@ -57,9 +58,13 @@ export async function redditPoster(
 
 		if (redditUrl) {
 			// write to db as posted with url
-			writeRandomTextFile(redditUrl);
+			// writeRandomTextFile(redditUrl);
 			const status = "posted";
 			await dbRedditPost(db, sessionId, subreddit, postTitle, status, redditUrl, postContent);
+
+			//update channel with reddit URL
+			await TelegramBotManager.sendToDefaultChannel(redditUrl);
+
 		} else {
 			// write to db as failed.
 			const status = "failed";
@@ -68,6 +73,10 @@ export async function redditPoster(
 			writeRandomTextFile("missing redditUrl");
 
 			await dbRedditPost(db, sessionId, subreddit, postTitle, status, external_id, postContent, err);
+
+			// update telegram with failure.
+			await TelegramBotManager.sendToDefaultChannel(`${sessionId}: ${err}`);
+
 		}
 
 	} catch (error) {

@@ -94,7 +94,7 @@ export function titleBuilderTelegram(aircraft: SquawkText): string | null {
 		const acInfo = findDesignationByICAO(aircraft.equipment);
 
 		if (acInfo) {
-			title.push(`(${acInfo.model})`);
+			title.push(`(${acInfo.model}) `);
 		} else {
 			title.push(`(${aircraft.equipment}) `);
 		}
