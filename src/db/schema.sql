@@ -51,8 +51,9 @@ INSERT OR IGNORE INTO social_platforms (name) VALUES
 -- social posts
 CREATE TABLE IF NOT EXISTS social_posts (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    tracking_session_id INTEGER,
+    tracking_sessions_id INTEGER,
     platform_id INTEGER,
+    session_id TEXT,
     channel TEXT,
     title TEXT,
     message TEXT,

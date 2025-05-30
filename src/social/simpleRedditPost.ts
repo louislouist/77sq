@@ -100,12 +100,7 @@ async function dbRedditPost(
 	// TODO: handle when RedditPoster fails: status "failed", error_message: error
 	const platform = "Reddit";
 	const readPriority = 2;
-	// db
-	// redditUrl
-	// postTitle
-	// message (postContent)
-	// channel (subreddit)
-	// sessionId
+
 	try {
 		const platform_id = await dbQueue.get<{ id: number }>(
 			db,
@@ -116,23 +111,23 @@ async function dbRedditPost(
 
 		if (platform_id) {
 			// get tracking_session_id at start
-			const tracking_session_id = await dbQueue.get<{ id: number }>(
+			const tracking_sessions_id = await dbQueue.get<{ id: number }>(
 				db,
 				`SELECT id FROM tracking_sessions 
 				WHERE session_id=?
-				ORDER BY seqNr ASC LIMIT 1;
+				ORDER BY seqNr DESC LIMIT 1;
 				`,
 				[sessionId],
 				readPriority
 			);
 
-			if (tracking_session_id) {
+			if (tracking_sessions_id) {
 				// add to social_posts
 				await dbQueue.run(
 					db,
-					`INSERT INTO social_posts (tracking_session_id, platform_id, 
+					`INSERT INTO social_posts (tracking_sessions_id, platform_id, session_id, 
 					channel, title, message, external_id, status, error_message) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-					[tracking_session_id.id, platform_id.id, subreddit, title, message, url, status, error_message]
+					[tracking_sessions_id.id, platform_id.id, sessionId, subreddit, title, message, url, status, error_message]
 				);
 
 			}
