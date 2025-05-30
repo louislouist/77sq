@@ -15,6 +15,7 @@ export class AdvancedJobQueue {
 	private queue: Job[] = [];
 	private runningReads = 0;
 	private runningWrites = 0;
+	private processing = false;
 
 	constructor(
 		private maxReadConcurrency = 5,
@@ -28,24 +29,48 @@ export class AdvancedJobQueue {
 	}
 
 	private async processQueue() {
-		if (this.queue.length === 0) return;
+		if (this.processing) return;  // prevent overlap
+		this.processing = true;
 
-		for (let i = 0; i < this.queue.length; i++) {
-			const job = this.queue[i];
+		try {
+			while (this.queue.length > 0) {
+				let jobStarted = false;
 
-			if (job.type === 'write' && this.runningWrites < this.maxWriteConcurrency && this.runningReads === 0) {
-				this.queue.splice(i, 1);
-				this.runningWrites++;
-				this.runJob(job, () => this.runningWrites--);
-				break;
+				for (let i = 0; i < this.queue.length; i++) {
+					const job = this.queue[i];
+
+					if (
+						job.type === 'write' &&
+						this.runningWrites < this.maxWriteConcurrency &&
+						this.runningReads === 0
+					) {
+						this.queue.splice(i, 1);
+						this.runningWrites++;
+						this.runJob(job, () => this.runningWrites--);
+						jobStarted = true;
+						break;
+					}
+
+					if (
+						job.type === 'read' &&
+						this.runningReads < this.maxReadConcurrency &&
+						this.runningWrites === 0
+					) {
+						this.queue.splice(i, 1);
+						this.runningReads++;
+						this.runJob(job, () => this.runningReads--);
+						jobStarted = true;
+						i--; // Allow other reads to be checked
+					}
+				}
+
+				if (!jobStarted) {
+					// Wait briefly before retrying queue processing
+					await new Promise(resolve => setTimeout(resolve, 10));
+				}
 			}
-
-			if (job.type === 'read' && this.runningReads < this.maxReadConcurrency && this.runningWrites === 0) {
-				this.queue.splice(i, 1);
-				this.runningReads++;
-				this.runJob(job, () => this.runningReads--);
-				i--; // allow other reads to run
-			}
+		} finally {
+			this.processing = false;
 		}
 	}
 
