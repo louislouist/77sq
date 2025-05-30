@@ -22,7 +22,7 @@
     "typescript": "^5.8.3"
   },
   "dependencies": {
-    "closest-airport-static-utils": "github:louislouist/closest-airport-static-utils",
+    "closest-airport-static-utils": "git+http://github:louislouist/closest-airport-static-utils",
     "express": "^5.1.0",
     "grammy": "^1.36.3",
     "icao-designation": "git+http://github.com/louislouist/icaoDesignation.git",
