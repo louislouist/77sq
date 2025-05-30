@@ -6,6 +6,7 @@ import { dbQueue } from "../db/queue/dbQueue";
 import { Database } from "sqlite";
 import { buildAircraftInfoText, buildAircraftInfoTextRMD } from "./infoBuilder";
 import { TelegramBotManager } from "./TelegramBot";
+import { dbTelegramBot } from "../db/dbTelegramBot";
 
 export async function simpleRedditPost(flight: Aircraft): Promise<void> {
 	const postTitle = await createSocialPost(flight);
@@ -64,6 +65,15 @@ export async function redditPoster(
 
 			//update channel with reddit URL
 			await TelegramBotManager.sendToDefaultChannel(redditUrl);
+			await dbTelegramBot(
+				db,
+				sessionId,
+				"reddit_url",
+				"posted",
+				undefined,
+				redditUrl,
+				undefined
+			)
 
 		} else {
 			// write to db as failed.
@@ -126,7 +136,7 @@ async function dbRedditPost(
 				await dbQueue.run(
 					db,
 					`INSERT INTO social_posts (tracking_sessions_id, platform_id, session_id, 
-					channel, title, message, external_id, status, error_message) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+					channel, title, message, external_id, status, error_message) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
 					[tracking_sessions_id.id, platform_id.id, sessionId, subreddit, title, message, url, status, error_message]
 				);
 

@@ -71,6 +71,14 @@ export class TelegramBotManager {
 		await this.sendMessage(this.channelId, message);
 	}
 
+	public static getSettings() {
+		return {
+			token: this.token ? `${this.token.slice(0, 8)}...` : undefined,
+			channelId: this.channelId,
+			isConfigured: this.isConfigured(),
+			isStarted: this.isStarted,
+		};
+	}
 
 	private static getRecentFlights(): string[] {
 		return ["JFK → LAX, 9:00 AM", "LAX → SFO, 11:00 AM", "SFO → SEA, 1:30 PM"];

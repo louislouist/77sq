@@ -1,4 +1,124 @@
 ============debugging tracking=========
+session_id: 4bf61580-8cd7-43bd-a40e-610f13f67722, seqNr: 3
+RedditPoster configured()
+Squawk 7700 · G-BYVO · callsign: SKY7 hex: 400EEC (G115) near: EGGW: London Luton Airport reported.
+Posting to Reddit: r/squawk7700
+(node:17549) TimeoutNegativeWarning: -Infinity is a negative number.
+Timeout duration was set to 1.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Text post submitted: [object Promise]
+dbPostReddit():  Error: SQLITE_ERROR: 8 values for 9 columns
+--> in Database#run('INSERT INTO social_posts (tracking_sessions_id, platform_id, session_id, \n' +
+  '\t\t\t\t\tchannel, title, message, external_id, status, error_message) VALUES (?, ?, ?, ?, ?, ?, ?, ?)', [
+  11145,
+  1,
+  '4bf61580-8cd7-43bd-a40e-610f13f67722',
+  'squawk7700',
+  'Squawk 7700 · G-BYVO · callsign: SKY7 hex: 400EEC (G115) near: EGGW: London Luton Airport reported.',
+  '## **Flight Information: G-BYVO**\n' +
+    '\n' +
+    '[SKY7 on FightAware](https://www.flightaware.com/live/flight/SKY7) · [G-BYVO on flightradar24](https://www.flightradar24.com/G-BYVO) · [400EEC on adsb.lol](https://adsb.lol/?icao=400EEC)\n' +
+    '\n' +
+    '***Flight***: SKY7 ***ICAO Hex***: 400EEC ***Registration***: G-BYVO\n' +
+    '\n' +
+    '***Aircraft***: G115:  [doc8643.com](https://www.doc8643.com/aircraft/G115)\n' +
+    '\n' +
+    '***Category***: A1: (Light (< 15,500 lbs))\n' +
+    '\n' +
+    '***Squawk***: 7700 ***Emergency***: general ***Message Type***: *adsb_icao*\n' +
+    '\n' +
+    '## **Current Status:**\n' +
+    '\n' +
+    '***Altitude (Baro)***: 5625 ft\n' +
+    '\n' +
+    '***Altitude (Geom)***: 5950 ft\n' +
+    '\n' +
+    '***Ground Speed***: 102 knots\n' +
+    '\n' +
+    '***Track***: 258.69°\n' +
+    '\n' +
+    '***Position***: 52.6100, -0.4487\n' +
+    '## **Nearby Airport(s) and Frequencies:**\n' +
+    '\n' +
+    '### ***RAF Wittering (EGXT)***\n' +
+    ' [EGXT Wikipedia](https://en.wikipedia.org/wiki/RAF_Wittering)\n' +
+    '\n' +
+    '***Location***: England\n' +
+    ' (GB)\n' +
+    '\n' +
+    '***Frequencies***:\n' +
+    '\n' +
+    '\n' +
+    '| Type | Description | Frequency |\n' +
+    '|:------:|:------------:|:---------------:\n' +
+    '| APP | (APP) | 130.2 MHz |\n' +
+    '| ATIS | (ATIS) | 242.47 MHz |\n' +
+    '| CAC | (LONDON MIL) | 29.997 MHz |\n' +
+    '| DEP | (DEP/DIR) | 278.45 MHz |\n' +
+    '| GND | (GND) | 369.22 MHz |\n' +
+    '| GRN | (N/A) | 125.525 MHz |\n' +
+    '| TWR | (TWR) | 125.525 MHz |\n' +
+    '| TWR | (N/A) | 372.22 MHz |\n' +
+    '\n' +
+    '### ***RAF Barkston Heath (EGYE)***\n' +
+    ' [EGYE Wikipedia](https://en.wikipedia.org/wiki/RAF_Barkston_Heath)\n' +
+    '\n' +
+    '***Location***: England\n' +
+    ' (GB)\n' +
+    '\n' +
+    '***Frequencies***:\n' +
+    '\n' +
+    '\n' +
+    '| Type | Description | Frequency |\n' +
+    '|:------:|:------------:|:---------------:\n' +
+    '| APP | (CRANWELLL APP) | 28.077 MHz |\n' +
+    '| ATIS | (N/A) | 124.2 MHz |\n' +
+    '| ATIS | (ATIS) | 293.45 MHz |\n' +
+    '| DEP | (DEP) | 119.375 MHz |\n' +
+    '| DEP | (N/A) | 355.95 MHz |\n' +
+    '| GND | (GND) | 389.45 MHz |\n' +
+    '| TWR | (TWR) | 120.425 MHz |\n' +
+    '| TWR | (N/A) | 281.225 MHz |\n' +
+    '\n' +
+    '### ***RAF Cranwell (EGYD)***\n' +
+    ' [EGYD Wikipedia](https://en.wikipedia.org/wiki/RAF_Cranwell)\n' +
+    '\n' +
+    '***Location***: England\n' +
+    ' (GB)\n' +
+    '\n' +
+    '***Frequencies***:\n' +
+    '\n' +
+    '\n' +
+    '| Type | Description | Frequency |\n' +
+    '|:------:|:------------:|:---------------:\n' +
+    '| APP | (APP) | 119.375 MHz |\n' +
+    '| APP | (N/A) | 280.775 MHz |\n' +
+    '| ATIS | (ATIS) | 135.675 MHz |\n' +
+    '| ATIS | (N/A) | 233.628 MHz |\n' +
+    '| CAC | (CAC) | 27.777 MHz |\n' +
+    '| DEP | (DEP) | 119.375 MHz |\n' +
+    '| DEP | (N/A) | 275.675 MHz |\n' +
+    '| GND | (GND) | 36.92 MHz |\n' +
+    '| GRN | (N/A) | 240.425 MHz |\n' +
+    '| TWR | (TWR) | 125.05 MHz |\n' +
+    '| TWR | (N/A) | 268.625 MHz |\n',
+  'https://www.reddit.com/r/squawk7700/comments/1kyzf73/squawk_7700_gbyvo_callsign_sky7_hex_400eec_g115/',
+  'posted',
+  undefined
+], [Function (anonymous)])
+    at /Users/ltrump/src/7700/77sq/node_modules/sqlite/build/Database.js:96:21
+    at new Promise (<anonymous>)
+    at Database.run (/Users/ltrump/src/7700/77sq/node_modules/sqlite/build/Database.js:94:16)
+    at Object.fn (/Users/ltrump/src/7700/77sq/dist/db/queue/dbAdvancedQueue.js:95:45)
+    at AdvancedJobQueue.runJob (/Users/ltrump/src/7700/77sq/dist/db/queue/dbAdvancedQueue.js:66:23)
+    at AdvancedJobQueue.processQueue (/Users/ltrump/src/7700/77sq/dist/db/queue/dbAdvancedQueue.js:40:30) {
+  errno: 1,
+  code: 'SQLITE_ERROR',
+  __augmented: true
+}
+
+
+============debugging tracking=========
 session_id: 1c00f877-d996-4d11-a6f1-2f7ade022e5c, seqNr: 3
 RedditPoster configured()
 Squawk 7700 · 23-03516 · callsign: R33516 hex: AF85FC (H64) reported.

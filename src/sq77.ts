@@ -11,6 +11,7 @@ import { RedditPoster } from "postreddit";
 import { writeRandomTextFile } from "./etc/writeRandomTextFile";
 import { redditPoster, simpleRedditPost } from "./social/simpleRedditPost";
 import { TelegramBotManager } from "./social/TelegramBot";
+import { dbTelegramBot } from "./db/dbTelegramBot";
 
 let running = true;
 
@@ -186,6 +187,15 @@ async function addNewTrackedAircraft(
 		const title = titleBuilderTelegram(flight);
 		if (title) {
 			await TelegramBotManager.sendToDefaultChannel(title);
+			await dbTelegramBot(
+				db,
+				trackingId,
+				"info_post",
+				"posted",
+				undefined,
+				title,
+				undefined
+			)
 		} else {
 			await TelegramBotManager.sendToDefaultChannel(`Missing Title: icao hex: ${flight.hex}`);
 		}

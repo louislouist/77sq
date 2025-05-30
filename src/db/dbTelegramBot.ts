@@ -1,21 +1,22 @@
 import { Database } from "sqlite";
 import { writeRandomTextFile } from "../etc/writeRandomTextFile";
 import { dbQueue } from "./queue/dbQueue";
+import { TelegramBotManager } from "../social/TelegramBot";
 
-// TODO: move to db/
 export async function dbTelegramBot(
 	db: Database,
 	sessionId: string,
-	channelId: string,
-	title: string,
+	title: string,		// post info
 	status: string,
 	url?: string,
-	message?: string,
+	message?: string,	// post content
 	error_message?: string
-) {
-	// TODO: handle when RedditPoster fails: status "failed", error_message: error
+): Promise<void> {
+	// TODO: handle when TelegramBotManager fails: status "failed", error_message: error
 	const platform = "Telegram";
 	const readPriority = 2;
+
+	const channelId = TelegramBotManager.getSettings().channelId;
 
 	try {
 		const platform_id = await dbQueue.get<{ id: number }>(
@@ -42,7 +43,7 @@ export async function dbTelegramBot(
 				await dbQueue.run(
 					db,
 					`INSERT INTO social_posts (tracking_sessions_id, platform_id, session_id,
-					channel, title, message, external_id, status, error_message) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+					channel, title, message, external_id, status, error_message) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
 					[tracking_sessions_id.id, platform_id.id, sessionId, channelId, title, message, url, status, error_message]
 				);
 
