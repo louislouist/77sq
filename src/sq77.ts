@@ -134,15 +134,43 @@ async function updateTrackedAircraft(
 		// ground or approach update tracking and socials
 		if (tracking[index].count > 3) {
 			// update ground
-			if (flight.alt_baro === "ground") {
+			if (flight.alt_baro === "ground" && tracking[index].ground != true) {
 				// write to social and update
+				const grdMessage = `${flight.hex}:${flight.r}: ${flight.flight} is reporting touchdown.`;
 				tracking[index].ground = true;
+				if (TelegramBotManager.isConfigured()) {
+					await TelegramBotManager.sendToDefaultChannel(grdMessage);
+					await dbTelegramBot(
+						db,
+						tracking[index].id,
+						"info_post",
+						"posted",
+						undefined,
+						grdMessage,
+						undefined
+					)
+				}
+
 			}
 			// update approach
-			if (flight.nav_modes?.includes("approach")) {
+			if (flight.nav_modes?.includes("approach") && tracking[index].approach != true) {
 				// ‘althold’, ‘approch')?
 				tracking[index].approach = true;
-			}
+				const approachMessage = `${flight.hex}: ${flight.r}: ${flight.flight} autopilot is in approach.`;
+				if (TelegramBotManager.isConfigured()) {
+					await TelegramBotManager.sendToDefaultChannel(approachMessage);
+					await dbTelegramBot(
+						db,
+						tracking[index].id,
+						"info_post",
+						"posted",
+						undefined,
+						approachMessage,
+						undefined
+					)
+				}
+
+			} // maybe set tracking approach to false as an else covering approach on then off than on again.
 		}
 	}
 }

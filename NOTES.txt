@@ -1,4 +1,6 @@
 TODO::
+need telegram test channel
+setup CI on remote system
 remove log file writes for most cases.
 remove unused db items.
 	check db/queue
@@ -6,16 +8,8 @@ add approaching and ground in tracking.
 add approach and on ground followup posts.
 	handle nav_modes when the flight goes into approach.
 
-social_posts:: 
-	need session_id
-	tracking_session_id should point to last entry and not first when posted
-	telegram should post on first site, so that should cover the earliest tracking_session_id or close to it.
-
 rm src/social/getEmitterCategory.xx
 
-telegram support:
-	https://medium.com/@kondaurov.dev/typescript-client-for-telegram-bot-api-4dfd99ee1a92
-	chat_id: 888356967
 
 Express::
 	Express routes for viewing aircraft.
@@ -128,4 +122,10 @@ update closest aiports
 	test fetch-data after build
 	try using liveATCExistsByICAO()
 	add country after airport location.
-
+social_posts:: 
+	need session_id
+	tracking_session_id should point to last entry and not first when posted
+	telegram should post on first site, so that should cover the earliest tracking_session_id or close to it.
+telegram support:
+	https://medium.com/@kondaurov.dev/typescript-client-for-telegram-bot-api-4dfd99ee1a92
+	chat_id: 888356967
