@@ -1,4 +1,5 @@
 TODO::
+Update package.json with github info.
 need telegram test channel
 setup CI on remote system
 remove log file writes for most cases.
