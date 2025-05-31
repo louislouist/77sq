@@ -22,10 +22,12 @@
     "typescript": "^5.8.3"
   },
   "dependencies": {
-    "closest-airport-static-utils": "git+http://github.com:louislouist/closest-airport-static-utils",
+    "closest-airport-static-utils": "git+http://github.com/louislouist/closest-airport-static-utils.git",
     "express": "^5.1.0",
     "grammy": "^1.36.3",
     "icao-designation": "git+http://github.com/louislouist/icaoDesignation.git",
+    "install": "^0.13.0",
+    "npm": "^11.4.1",
     "postreddit": "git+http://github.com/louislouist/postreddit.git",
     "sqlite": "^5.1.1",
     "sqlite3": "^5.1.7",

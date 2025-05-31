@@ -17,6 +17,8 @@ async function main() {
 
 	if (RedditPoster.isConfigured()) {
 		console.log("Reddit Posting Configured");
+	} else {
+		console.log("Reddit posting is not configured.")
 	}
 
 	if (TelegramBotManager.isConfigured()) {
