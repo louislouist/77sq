@@ -1,11 +1,11 @@
 TODO::
-Update package.json with github info.
+Haven't had a failed reddit post so not sure how the exception handling will work.
+	Should write to the social_posts table failed but...
 need telegram test channel
 setup CI on remote system
 remove log file writes for most cases.
 remove unused db items.
 	check db/queue
-add approaching and ground in tracking.
 add approach and on ground followup posts.
 	handle nav_modes when the flight goes into approach.
 
@@ -129,4 +129,6 @@ social_posts::
 	telegram should post on first site, so that should cover the earliest tracking_session_id or close to it.
 telegram support:
 	https://medium.com/@kondaurov.dev/typescript-client-for-telegram-bot-api-4dfd99ee1a92
-	chat_id: 888356967
+	chat_id: 8883569679
+Update package.json with github info.
+add approaching and ground in tracking.
