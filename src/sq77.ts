@@ -150,6 +150,8 @@ async function updateTrackedAircraft(
 						undefined
 					)
 				}
+				// comment on reddit post.
+				// get from social_posts: session_id, title = reddit_url, { message }
 
 			}
 			// update approach

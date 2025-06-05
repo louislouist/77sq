@@ -1,4 +1,5 @@
 TODO::
+Change reddit posting to use DEFAULT_SUBREDDIT
 Haven't had a failed reddit post so not sure how the exception handling will work.
 	Should write to the social_posts table failed but...
 need telegram test channel
