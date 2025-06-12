@@ -42,28 +42,39 @@ export async function simpleRedditPost(flight: Aircraft): Promise<void> {
 export async function redditPoster(
 	db: Database,
 	flight: Aircraft,
-	sessionId: string
+	sessionId: string,
+	subreddit?: string
 ): Promise<void> {
 	const postTitle = await createSocialPost(flight);
 	if (!postTitle) {
-		console.log("redditPost(): missing postTitle")
+		console.log("redditPost(): missing postTitle");
 		return;
 	}
 
-	const subreddit = "squawk7700";
 	const postContent = buildAircraftInfoTextRMD(flight);
+	let redditUrl: string | null = null;
+	let selectedSubreddit: string;
 
 	try {
-		console.log(`Posting to Reddit: r/${subreddit}`);
-		const redditUrl = await RedditPoster.postText(subreddit, postTitle, postContent);
+		if (subreddit) {
+			selectedSubreddit = subreddit;
+			console.log(`Posting to Reddit: r/${selectedSubreddit}`);
+			redditUrl = await RedditPoster.postText(selectedSubreddit, postTitle, postContent);
+		} else if (process.env.DEFAULT_SUBREDDIT) {
+			selectedSubreddit = process.env.DEFAULT_SUBREDDIT;
+			console.log(`Posting to default subreddit: r/${selectedSubreddit}`);
+			redditUrl = await RedditPoster.defaultPostText(postTitle, postContent);
+		} else {
+			const errorMsg = "❌ No subreddit specified and DEFAULT_SUBREDDIT is not set in .env.";
+			console.error(errorMsg);
+			await TelegramBotManager.sendToDefaultChannel(`${sessionId}: ${errorMsg}`);
+			writeRandomTextFile("Missing DEFAULT_SUBREDDIT and no subreddit provided.");
+			return;
+		}
 
 		if (redditUrl) {
-			// write to db as posted with url
-			// writeRandomTextFile(redditUrl);
 			const status = "posted";
-			await dbRedditPost(db, sessionId, subreddit, postTitle, status, redditUrl, postContent);
-
-			//update channel with reddit URL
+			await dbRedditPost(db, sessionId, selectedSubreddit, postTitle, status, redditUrl, postContent);
 			await TelegramBotManager.sendToDefaultChannel(redditUrl);
 			await dbTelegramBot(
 				db,
@@ -73,24 +84,17 @@ export async function redditPoster(
 				undefined,
 				redditUrl,
 				undefined
-			)
-
+			);
 		} else {
-			// write to db as failed.
 			const status = "failed";
-			const err = "Error: unable to post to reddit!"
-			const external_id = ""
+			const err = "Error: unable to post to reddit!";
+			const external_id = "";
 			writeRandomTextFile("missing redditUrl");
-
-			await dbRedditPost(db, sessionId, subreddit, postTitle, status, external_id, postContent, err);
-
-			// update telegram with failure.
+			await dbRedditPost(db, sessionId, selectedSubreddit, postTitle, status, external_id, postContent, err);
 			await TelegramBotManager.sendToDefaultChannel(`${sessionId}: ${err}`);
-
 		}
-
 	} catch (error) {
-		console.error("RedditPoster failed: ", error)
+		console.error("RedditPoster failed: ", error);
 		writeRandomTextFile(`error in reddit poster: ${error}`);
 	}
 }

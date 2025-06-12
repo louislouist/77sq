@@ -6,8 +6,8 @@ import { Database } from "sqlite";
 import { dbQueue } from "./db/queue/dbQueue";
 import { SquawkText, titleBuilder, titleBuilderTelegram } from "./social/titleBuilder";
 import { ADSBResponse, Aircraft } from "./types";
-import { dbCreateRedditPost } from "./db/dbCreateRedditPost";
-import { RedditPoster } from "postreddit";
+import { dbCreateRedditPost, getRedditMessageBySessionId } from "./db/dbCreateRedditPost";
+import { extractPostId, RedditPoster } from "postreddit";
 import { writeRandomTextFile } from "./etc/writeRandomTextFile";
 import { redditPoster, simpleRedditPost } from "./social/simpleRedditPost";
 import { TelegramBotManager } from "./social/TelegramBot";
@@ -142,7 +142,7 @@ async function updateTrackedAircraft(
 					await TelegramBotManager.sendToDefaultChannel(grdMessage);
 					await dbTelegramBot(
 						db,
-						tracking[index].id,
+						sessionId,
 						"info_post",
 						"posted",
 						undefined,
@@ -152,7 +152,26 @@ async function updateTrackedAircraft(
 				}
 				// comment on reddit post.
 				// get from social_posts: session_id, title = reddit_url, { message }
+				try {
+					const url = await getRedditMessageBySessionId(db, sessionId);
+					if (url) {
+						console.log("getRedditMessageBySessionId() in tracking:", url);
 
+						const grdMessage = `${flight.hex}:${flight.r}: ${flight.flight} is reporting touchdown.`;
+						const postId = extractPostId(url);
+
+						if (postId) {
+							await RedditPoster.commentOnPost(postId, grdMessage);
+							// TODO: add db logging
+						} else {
+							console.log("getRedditMessageBySessionId() missing postId");
+						}
+					} else {
+						console.log('No reddit url found for sessionId:', sessionId);
+					}
+				} catch (err) {
+					console.error('Error during Reddit post comment:', err);
+				}
 			}
 			// update approach
 			if (flight.nav_modes?.includes("approach") && tracking[index].approach != true) {

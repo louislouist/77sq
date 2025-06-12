@@ -131,3 +131,23 @@ export async function dbCreateRedditPost(
 		console.error('Error in createRedditPost:', error);
 	}
 }
+
+export async function getRedditMessageBySessionId(db: Database, sessionId: string): Promise<string | null> {
+	const sql = `
+		SELECT message
+		FROM social_posts
+		WHERE session_id = ?
+		  AND title = 'reddit_url'
+		ORDER BY created_at ASC
+		LIMIT 1
+	`;
+
+	try {
+		const redditUrl = await dbQueue.get<{ message: string }>(db, sql, [sessionId]);
+
+		return redditUrl?.message ?? null;
+	} catch (error) {
+		console.error('Failed to fetch message:', error);
+		return null;
+	}
+}
