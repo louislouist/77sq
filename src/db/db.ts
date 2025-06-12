@@ -3,6 +3,7 @@ import sqlite3 from "sqlite3";
 import { readFile } from "fs/promises";
 import { access, constants } from "fs/promises";
 import path from "path";
+import fs from "fs";
 
 const DB_PATH = path.resolve("adsb.sqlite");
 
@@ -43,6 +44,45 @@ async function verifyBasicSchema(db: Database): Promise<boolean> {
 	return true;
 }
 
+
+function isDatabaseWritable(dbPath: string): Promise<boolean> {
+	return new Promise((resolve) => {
+		// Step 1: Check file and directory write permissions
+		const dir = path.dirname(dbPath);
+
+		// If the database file exists, check it directly; otherwise, check the directory
+		const pathToCheck = fs.existsSync(dbPath) ? dbPath : dir;
+
+		try {
+			fs.accessSync(pathToCheck, fs.constants.W_OK);
+		} catch (err) {
+			// No write permission on file or directory
+			return resolve(false);
+		}
+
+		// Step 2: Try to open in READWRITE mode
+		const db = new sqlite3.Database(dbPath, sqlite3.OPEN_READWRITE, (err) => {
+			if (err) {
+				// Cannot open in read/write mode
+				return resolve(false);
+			}
+
+			// Step 3: Try a dummy write (using a temporary table)
+			db.run("CREATE TEMP TABLE writetest (id INTEGER)", (err) => {
+				if (err) {
+					db.close();
+					return resolve(false);
+				}
+
+				db.run("DROP TABLE writetest", (dropErr) => {
+					db.close();
+					resolve(!dropErr);
+				});
+			});
+		});
+	});
+}
+
 export async function getDB(): Promise<Database | undefined> {
 	sqlite3.verbose();
 
@@ -64,8 +104,14 @@ export async function getDB(): Promise<Database | undefined> {
 		} else {
 			console.log("db Schema is valid.")
 		}
-
 		console.log("Database connection established.");
+		// check if dataabse is in readonly mode (held by some other process)
+		const dbIsWritable = await isDatabaseWritable(DB_PATH);
+		if (dbIsWritable) {
+			console.log("Database in ready for data.");
+		} else {
+			console.error("ERROR: Unable to write to database.\nCheck to insure no other process is using the sqlite file, you have write permissions, or the filesystem isn't full, and restart.");
+		}
 	}
 
 	return db;

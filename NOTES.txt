@@ -132,4 +132,6 @@ telegram support:
 	https://medium.com/@kondaurov.dev/typescript-client-for-telegram-bot-api-4dfd99ee1a92
 	chat_id: 8883569679
 Update package.json with github info.
+Add read/write check to db init.
 add approaching and ground in tracking.
+
