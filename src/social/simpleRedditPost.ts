@@ -101,7 +101,7 @@ export async function redditPoster(
 
 
 // TODO: move to db/
-async function dbRedditPost(
+export async function dbRedditPost(
 	db: Database,
 	sessionId: string,
 	subreddit: string,

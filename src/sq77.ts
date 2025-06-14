@@ -9,7 +9,7 @@ import { ADSBResponse, Aircraft } from "./types";
 import { dbCreateRedditPost, getRedditMessageBySessionId } from "./db/dbCreateRedditPost";
 import { extractPostId, RedditPoster } from "postreddit";
 import { writeRandomTextFile } from "./etc/writeRandomTextFile";
-import { redditPoster, simpleRedditPost } from "./social/simpleRedditPost";
+import { dbRedditPost, redditPoster, simpleRedditPost } from "./social/simpleRedditPost";
 import { TelegramBotManager } from "./social/TelegramBot";
 import { dbTelegramBot } from "./db/dbTelegramBot";
 
@@ -157,14 +157,26 @@ async function updateTrackedAircraft(
 					if (url) {
 						console.log("getRedditMessageBySessionId() in tracking:", url);
 
-						const grdMessage = `${flight.hex}:${flight.r}: ${flight.flight} is reporting touchdown.`;
+						const lat = flight.lat ?? flight.rr_lat;
+						const lon = flight.lon ?? flight.rr_lon;
+
+						let mapLink: string = "";
+
+						if (lat && lon) {
+							mapLink = `\n\n[Aprox. Location](https://www.openstreetmap.org/#map=13/${lat}/${lon})`
+						}
+
+						const grdMessage = `${flight.hex}:${flight.r}: ${flight.flight} is reporting touchdown. ${mapLink}`;
 						const postId = extractPostId(url);
 
 						if (postId) {
 							await RedditPoster.commentOnPost(postId, grdMessage);
-							// TODO: add db logging
+							// add db logging to socail_posts
+							dbRedditPost(db, sessionId, postId, "reddit_comment", "posted", undefined, grdMessage, undefined);
 						} else {
 							console.log("getRedditMessageBySessionId() missing postId");
+							dbRedditPost(db, sessionId, "error", "reddit_comment", "failed", undefined, grdMessage, "missing postId");
+
 						}
 					} else {
 						console.log('No reddit url found for sessionId:', sessionId);
