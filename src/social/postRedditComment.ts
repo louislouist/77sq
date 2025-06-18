@@ -3,7 +3,7 @@ import { Aircraft } from "../types";
 import { getRedditMessageBySessionId } from "../db/dbCreateRedditPost";
 import { extractPostId, RedditPoster } from "postreddit";
 import { dbRedditPost } from "./simpleRedditPost";
-import { findClosestAirports } from "closest-airport-static-utils";
+import { findClosestAirports, loadAirports } from "closest-airport-static-utils";
 
 export async function postRedditComment(db: Database, ac: Aircraft, sessionId: string, message: string) {
 	try {
@@ -47,22 +47,27 @@ export function redditLandedMessage(ac: Aircraft): string {
 	const lat = ac.lat ?? ac.rr_lat;
 	const lon = ac.lon ?? ac.rr_lon;
 
-	let acInfo: string[] = [];
+	let landedMsg: string[] = [];
 
-	acInfo.push(ac.flight?.trim() || ac.r?.trim() || ac.hex || 'Unknown Aircraft');
-	acInfo.push(" is reporting touchdown")
-
-	// TODO: make sure closet airport type is any::
-	findClosestAirports()
+	landedMsg.push(ac.flight?.trim() || ac.r?.trim() || ac.hex || 'Unknown Aircraft');
+	landedMsg.push("is reporting touchdown.");
 
 	let mapLink: string = "";
 
 	if (lat && lon) {
-		mapLink = `\n\n[Aprox. Location](https://www.openstreetmap.org/#map=13/${lat}/${lon})`
+		mapLink = `\n\n[ADS-B Map Location](https://www.openstreetmap.org/#map=13/${lat}/${lon})`
+
+		const airports = loadAirports();
+		const closeAirport = findClosestAirports(lat, lon, airports, 1);
+		const airportName = closeAirport[0].name;
+		const airportIcao = closeAirport[0].icao;
+		const airportIata = closeAirport[0].iata;
+
+		landedMsg.push(`${airportName}: (${airportIcao}):(${airportIata})`);
+		landedMsg.push(mapLink);
 	}
 
-	const grdMessage = `${ac.hex}:${ac.r}: ${ac.flight} is reporting touchdown. ${mapLink}`;
 
-
+	return landedMsg.join(" ");
 
 }
