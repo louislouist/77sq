@@ -7,6 +7,7 @@ setup CI on remote system
 remove log file writes for most cases.
 remove unused db items.
 	check db/queue
+unify db methods.
 add approach and on ground followup posts.
 	handle nav_modes when the flight goes into approach.
 
