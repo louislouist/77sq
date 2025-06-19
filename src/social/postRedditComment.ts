@@ -20,16 +20,15 @@ export async function postRedditComment(db: Database, ac: Aircraft, sessionId: s
 				mapLink = `\n\n[Aprox. Location](https://www.openstreetmap.org/#map=13/${lat}/${lon})`
 			}
 
-			const grdMessage = `${ac.hex}:${ac.r}: ${ac.flight} is reporting touchdown. ${mapLink}`;
 			const postId = extractPostId(url);
 
 			if (postId) {
-				await RedditPoster.commentOnPost(postId, grdMessage);
+				await RedditPoster.commentOnPost(postId, message);
 				// add db logging to socail_posts
-				dbRedditPost(db, sessionId, postId, "reddit_comment", "posted", undefined, grdMessage, undefined);
+				dbRedditPost(db, sessionId, postId, "reddit_comment", "posted", undefined, message, undefined);
 			} else {
 				console.log("getRedditMessageBySessionId() missing postId");
-				dbRedditPost(db, sessionId, "error", "reddit_comment", "failed", undefined, grdMessage, "missing postId");
+				dbRedditPost(db, sessionId, "error", "reddit_comment", "failed", undefined, message, "missing postId");
 
 			}
 		} else {
@@ -67,7 +66,37 @@ export function redditLandedMessage(ac: Aircraft): string {
 		landedMsg.push(mapLink);
 	}
 
+	return landedMsg.join(" ");
+
+}
+
+
+export function redditApproachMessage(ac: Aircraft): string {
+	// flight name, 
+	const lat = ac.lat ?? ac.rr_lat;
+	const lon = ac.lon ?? ac.rr_lon;
+
+	let landedMsg: string[] = [];
+
+	landedMsg.push(ac.flight?.trim() || ac.r?.trim() || ac.hex || 'Unknown Aircraft');
+	landedMsg.push("autopilot approach set.");
+
+	let mapLink: string = "";
+
+	if (lat && lon) {
+		mapLink = `\n\n[ADS-B Map Location](https://www.openstreetmap.org/#map=13/${lat}/${lon})`
+
+		const airports = loadAirports();
+		const closeAirport = findClosestAirports(lat, lon, airports, 1);
+		const airportName = closeAirport[0].name;
+		const airportIcao = closeAirport[0].icao;
+		const airportIata = closeAirport[0].iata;
+
+		landedMsg.push(`near: ${airportName}: (${airportIcao}):(${airportIata})`);
+		landedMsg.push(mapLink);
+	}
 
 	return landedMsg.join(" ");
 
 }
+
