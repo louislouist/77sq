@@ -12,6 +12,7 @@ import { writeRandomTextFile } from "./etc/writeRandomTextFile";
 import { dbRedditPost, redditPoster, simpleRedditPost } from "./social/simpleRedditPost";
 import { TelegramBotManager } from "./social/TelegramBot";
 import { dbTelegramBot } from "./db/dbTelegramBot";
+import { postRedditComment, redditLandedMessage } from "./social/postRedditComment";
 
 let running = true;
 
@@ -152,37 +153,9 @@ async function updateTrackedAircraft(
 				}
 				// comment on reddit post.
 				// get from social_posts: session_id, title = reddit_url, { message }
-				try {
-					const url = await getRedditMessageBySessionId(db, sessionId);
-					if (url) {
-						console.log("getRedditMessageBySessionId() in tracking:", url);
-
-						const lat = flight.lat ?? flight.rr_lat;
-						const lon = flight.lon ?? flight.rr_lon;
-
-						let mapLink: string = "";
-
-						if (lat && lon) {
-							mapLink = `\n\n[Aprox. Location](https://www.openstreetmap.org/#map=13/${lat}/${lon})`
-						}
-
-						const grdMessage = `${flight.hex}:${flight.r}: ${flight.flight} is reporting touchdown. ${mapLink}`;
-						const postId = extractPostId(url);
-
-						if (postId) {
-							await RedditPoster.commentOnPost(postId, grdMessage);
-							// add db logging to socail_posts
-							dbRedditPost(db, sessionId, postId, "reddit_comment", "posted", undefined, grdMessage, undefined);
-						} else {
-							console.log("getRedditMessageBySessionId() missing postId");
-							dbRedditPost(db, sessionId, "error", "reddit_comment", "failed", undefined, grdMessage, "missing postId");
-
-						}
-					} else {
-						console.log('No reddit url found for sessionId:', sessionId);
-					}
-				} catch (err) {
-					console.error('Error during Reddit post comment:', err);
+				if (RedditPoster.isConfigured()) {
+					const msg = redditLandedMessage(flight);
+					await postRedditComment(db, flight, sessionId, msg);
 				}
 			}
 			// update approach
@@ -202,7 +175,10 @@ async function updateTrackedAircraft(
 						undefined
 					)
 				}
-
+				if (RedditPoster.isConfigured()) {
+					// TODO: better approach message
+					await postRedditComment(db, flight, sessionId, approachMessage);
+				}
 			} // maybe set tracking approach to false as an else covering approach on then off than on again.
 		}
 	}
