@@ -155,7 +155,7 @@ async function updateTrackedAircraft(
 				// get from social_posts: session_id, title = reddit_url, { message }
 				if (RedditPoster.isConfigured()) {
 					const msg = redditLandedMessage(flight);
-					await postRedditComment(db, flight, sessionId, msg);
+					await postRedditComment(db, sessionId, msg);
 				}
 			}
 			// update approach
@@ -177,7 +177,7 @@ async function updateTrackedAircraft(
 				}
 				if (RedditPoster.isConfigured()) {
 					// TODO: better approach message
-					await postRedditComment(db, flight, sessionId, approachMessage);
+					await postRedditComment(db, sessionId, approachMessage);
 				}
 			} // maybe set tracking approach to false as an else covering approach on then off than on again.
 		}
