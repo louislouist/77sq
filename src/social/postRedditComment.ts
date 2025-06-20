@@ -47,13 +47,30 @@ export function redditLandedMessage(ac: Aircraft): string {
 	if (lat && lon) {
 		mapLink = `\n\n[ADS-B Map Location](https://www.openstreetmap.org/#map=13/${lat}/${lon})`
 
+		let msgAirport: string[] = [];
+
 		const airports = loadAirports();
 		const closeAirport = findClosestAirports(lat, lon, airports, 1);
+
 		const airportName = closeAirport[0].name;
+		msgAirport.push(`\n\n${airportName}`);
+
 		const airportIcao = closeAirport[0].icao;
 		const airportIata = closeAirport[0].iata;
 
-		landedMsg.push(`${airportName}: (${airportIcao}):(${airportIata})`);
+		if (airportIcao && airportIata) {
+			msgAirport.push(`: (${airportIcao})/(${airportIata})`);
+		} else if (airportIcao || airportIata) {
+			msgAirport.push(`: (${airportIata || airportIcao})`);
+		}
+
+		// TODO: add home_link to Airport type.
+		// const homeLink = closeAirport[0].wikipedia;
+		// if (homeLink) {
+		// 	msgAirport.push(`\n\n\(${airportName} website)[${homeLink}]`);
+		// }
+		//
+		landedMsg.push(msgAirport.join(''));
 		landedMsg.push(mapLink);
 	}
 
@@ -81,7 +98,7 @@ export function redditApproachMessage(ac: Aircraft): string {
 		const airportIcao = closeAirport[0].icao;
 		const airportIata = closeAirport[0].iata;
 
-		approachMsg.push(`near: ${airportName}: (${airportIcao}):(${airportIata})`);
+		approachMsg.push(`\n\nnear: ${airportName}: (${airportIcao}):(${airportIata})`);
 		approachMsg.push(mapLink);
 	}
 

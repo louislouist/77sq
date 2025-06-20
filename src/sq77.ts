@@ -12,7 +12,7 @@ import { writeRandomTextFile } from "./etc/writeRandomTextFile";
 import { dbRedditPost, redditPoster, simpleRedditPost } from "./social/simpleRedditPost";
 import { TelegramBotManager } from "./social/TelegramBot";
 import { dbTelegramBot } from "./db/dbTelegramBot";
-import { postRedditComment, redditLandedMessage } from "./social/postRedditComment";
+import { postRedditComment, redditApproachMessage, redditLandedMessage } from "./social/postRedditComment";
 
 let running = true;
 
@@ -176,8 +176,8 @@ async function updateTrackedAircraft(
 					)
 				}
 				if (RedditPoster.isConfigured()) {
-					// TODO: better approach message
-					await postRedditComment(db, sessionId, approachMessage);
+					const msg = redditApproachMessage(flight);
+					await postRedditComment(db, sessionId, msg);
 				}
 			} // maybe set tracking approach to false as an else covering approach on then off than on again.
 		}
