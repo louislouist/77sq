@@ -3,7 +3,7 @@ import { Aircraft } from "../types";
 import { getRedditMessageBySessionId } from "../db/dbCreateRedditPost";
 import { extractPostId, RedditPoster } from "postreddit";
 import { dbRedditPost } from "./simpleRedditPost";
-import { findClosestAirports, loadAirports } from "closest-airport-static-utils";
+import { findClosestAirports, haversineDistance, loadAirports } from "closest-airport-static-utils";
 
 export async function postRedditComment(db: Database, sessionId: string, message: string) {
 	try {
@@ -64,12 +64,16 @@ export function redditLandedMessage(ac: Aircraft): string {
 			msgAirport.push(`: (${airportIata || airportIcao})`);
 		}
 
-		// TODO: add home_link to Airport type.
-		// const homeLink = closeAirport[0].wikipedia;
-		// if (homeLink) {
-		// 	msgAirport.push(`\n\n\(${airportName} website)[${homeLink}]`);
-		// }
-		//
+		const distance = distanceFromAirport(lat, lon, closeAirport[0].lat, closeAirport[0].lon);
+
+		// TODO: after formatting, select distance to show.
+		if (distance.km > 1) {
+			console.log("distance > 1km: ", distance.km);
+		}
+
+		landedMsg.push(`\n\n${distance.miles}miles/${distance.km}km from airport.`);
+
+
 		landedMsg.push(msgAirport.join(''));
 		landedMsg.push(mapLink);
 	}
@@ -105,3 +109,18 @@ export function redditApproachMessage(ac: Aircraft): string {
 	return approachMsg.join(" ");
 }
 
+type AirportDistance = {
+	km: number;
+	miles: number;
+}
+
+function distanceFromAirport(ac_lat: number, ac_lon: number, ap_lat: number, ap_lon: number): AirportDistance {
+	const km = haversineDistance(ac_lat, ac_lon, ap_lat, ap_lon);
+	return { km, miles: kmToMiles(km) }
+
+}
+
+function kmToMiles(km: number): number {
+	const milesPerKm = 0.621371;
+	return km * milesPerKm;
+}
