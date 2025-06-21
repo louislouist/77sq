@@ -7,7 +7,6 @@ remove unused db items.
 	check db/queue
 unify db methods.
 
-rm src/social/getEmitterCategory.xx
 
 
 Express::
@@ -135,4 +134,5 @@ Change reddit posting to use DEFAULT_SUBREDDIT
 need telegram test channel
 add approach and on ground followup posts.
 	handle nav_modes when the flight goes into approach.
+rm src/social/getEmitterCategory.xx
 

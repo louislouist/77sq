@@ -50,7 +50,7 @@ export function redditLandedMessage(ac: Aircraft): string {
 		let msgAirport: string[] = [];
 
 		const airports = loadAirports();
-		const closeAirport = findClosestAirports(lat, lon, airports, 1);
+		const closeAirport = findClosestAirports(lat, lon, airports, 1, []);
 
 		const airportName = closeAirport[0].name;
 		msgAirport.push(`\n\n${airportName}`);
@@ -71,7 +71,7 @@ export function redditLandedMessage(ac: Aircraft): string {
 			console.log("distance > 1km: ", distance.km);
 		}
 
-		landedMsg.push(`\n\n${distance.miles}miles/${distance.km}km from airport.`);
+		landedMsg.push(`\n\n${distance.miles.toFixed(1)}miles/${distance.km.toFixed(1)}km from airport.`);
 
 
 		landedMsg.push(msgAirport.join(''));
