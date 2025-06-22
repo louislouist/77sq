@@ -64,15 +64,15 @@ export function redditLandedMessage(ac: Aircraft): string {
 			msgAirport.push(`: (${airportIata || airportIcao})`);
 		}
 
+
+		// distance from airport.
 		const distance = distanceFromAirport(lat, lon, closeAirport[0].lat, closeAirport[0].lon);
 
-		// TODO: after formatting, select distance to show.
-		if (distance.km > 1) {
-			console.log("distance > 1km: ", distance.km);
+		if (distance.km < 1.0) {
+			landedMsg.push(`\n\nAircraft appears to have landed at ${airportName}.`);
+		} else {
+			landedMsg.push(`\n\nLanded ${distance.miles.toFixed(1)} miles/${distance.km.toFixed(1)} km from airport.`);
 		}
-
-		landedMsg.push(`\n\n${distance.miles.toFixed(1)}miles/${distance.km.toFixed(1)}km from airport.`);
-
 
 		landedMsg.push(msgAirport.join(''));
 		landedMsg.push(mapLink);
@@ -96,6 +96,10 @@ export function redditApproachMessage(ac: Aircraft): string {
 	if (lat && lon) {
 		mapLink = `\n\n[ADS-B Map Location](https://www.openstreetmap.org/#map=13/${lat}/${lon})`
 
+		// So far only large jets from major airlines use nav_modes for autopilot settings
+		// using the [large_airport, medium_aiport] default of findClosestAirports()
+		// because of the unlikely case of using autopilot for a helipad, etc emergency approach.
+		// NOTE: determine if airportTypes should be set to large_airport only.
 		const airports = loadAirports();
 		const closeAirport = findClosestAirports(lat, lon, airports, 1);
 		const airportName = closeAirport[0].name;
@@ -103,6 +107,10 @@ export function redditApproachMessage(ac: Aircraft): string {
 		const airportIata = closeAirport[0].iata;
 
 		approachMsg.push(`\n\nnear: ${airportName}: (${airportIcao}):(${airportIata})`);
+
+		const distance = distanceFromAirport(lat, lon, closeAirport[0].lat, closeAirport[0].lon);
+		approachMsg.push(`\n\n${distance.miles.toFixed(1)} miles/${distance.km.toFixed(1)} km from airport.`);
+
 		approachMsg.push(mapLink);
 	}
 
