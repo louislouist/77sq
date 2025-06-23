@@ -1,4 +1,6 @@
 TODO::
+Add map to reddit post
+Improve telegram messages
 Haven't had a failed reddit post so not sure how the exception handling will work.
 	Should write to the social_posts table failed but...
 setup CI on remote system

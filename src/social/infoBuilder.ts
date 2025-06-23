@@ -104,6 +104,12 @@ export function buildAircraftInfoTextRMD(aircraft: Aircraft): string {
 		linkInfo.push(`[${aircraft.hex} on adsb.lol](${adlolUrl})`);
 	}
 
+	if (aircraft.lat && aircraft.lon || aircraft.rr_lat && aircraft.rr_lon) {
+		const lat = aircraft.lat || aircraft.rr_lat;
+		const lon = aircraft.lon || aircraft.rr_lon;
+		linkInfo.push(`[OSM Location](https://www.openstreetmap.org/#map=13/${lat}/${lon})`);
+	}
+
 	info.push(linkInfo.join(' · '));
 
 	// Aircraft Info
