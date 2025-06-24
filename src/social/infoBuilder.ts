@@ -89,7 +89,7 @@ export function buildAircraftInfoTextRMD(aircraft: Aircraft): string {
 
 	const linkInfo: string[] = [];
 
-	if (aircraft.flight) {
+	if (aircraft.flight && aircraft.flight != "") {
 		const faUrl = getFlightAwareUrl(aircraft.flight);
 		linkInfo.push(`[${aircraft.flight.trim()} on FightAware](${faUrl})`);
 	}
@@ -180,10 +180,6 @@ export function buildAircraftInfoTextRMD(aircraft: Aircraft): string {
 		});
 	}
 
-	// if (aircraft.messages !== undefined) info.push(`Messages Received: ${aircraft.messages}`);
-	// if (aircraft.seen !== undefined) info.push(`Last Seen: ${aircraft.seen} sec ago`);
-	// if (aircraft.rssi !== undefined) info.push(`Signal Strength: ${aircraft.rssi}`);
-
 	// NOTE: double \n for reddit formting. no join for airport data.
 	const redditPost = info.join('\n\n') + airportInfo.join('\n');
 
@@ -237,10 +233,6 @@ export function formatFrequenciesReddit(frequencies: Frequency[]): string {
 		return '*No radio information*\n';
 	}
 
-	const formattedCells = frequencies.map(f =>
-		`* ${f.type} (${f.description || 'N/A'}): *${f.mhz} MHz*`
-	);
-
 	const tableRows: string[] = [];
 	const header = "| Type | Description | Frequency |";
 	const markerRow = "|:------:|:------------:|:---------------:";
@@ -256,37 +248,12 @@ export function formatFrequenciesReddit(frequencies: Frequency[]): string {
 	return '\n' + tableRows.join('\n') + '\n';
 }
 
-
-export function OldformatFrequenciesReddit(frequencies: Frequency[]): string {
-	if (!frequencies || frequencies.length === 0) {
-		return '*No radio information*';
-	}
-
-	const formattedCells = frequencies.map(f =>
-		`* ${f.type} (${f.description || 'N/A'}): *${f.mhz} MHz*`
-	);
-
-	const maxColumns = 4;
-	const maxRows = 3;
-	const maxItems = maxColumns * maxRows;
-	const tableRows: string[] = [];
-
-	for (let i = 0; i < Math.min(formattedCells.length, maxItems); i += maxColumns) {
-		const rowItems = formattedCells.slice(i, i + maxColumns);
-		while (rowItems.length < maxColumns) {
-			rowItems.push(''); // Pad to maintain column consistency
-		}
-		tableRows.push('| ' + rowItems.join(' | ') + ' |');
-	}
-	return '\n' + tableRows.join('\n') + '\n';
-}
-
 // URL builders
 //
 function getFlightRadar24Url(ac: string): string {
 	// callsign or registration
 	const acTrimmed = ac.trim();
-	return `https://www.flightradar24.com/${ac}`;
+	return `https://www.flightradar24.com/${acTrimmed}`;
 }
 
 function getFlightAwareUrl(ac: string): string {

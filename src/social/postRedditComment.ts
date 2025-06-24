@@ -45,7 +45,7 @@ export function redditLandedMessage(ac: Aircraft): string {
 	let mapLink: string = "";
 
 	if (lat && lon) {
-		mapLink = `\n\n[ADS-B Map Location](https://www.openstreetmap.org/#map=13/${lat}/${lon})`
+		mapLink = `\n\n[Touchdown ADS-B Map Location](https://www.openstreetmap.org/#map=13/${lat}/${lon})`
 
 		let msgAirport: string[] = [];
 
