@@ -72,7 +72,7 @@ export function redditLandedMessage(ac: Aircraft): string {
 		// distance from airport.
 		const distance = distanceFromAirport(lat, lon, closeAirport[0].lat, closeAirport[0].lon);
 
-		if (distance.km < 1.5) {
+		if (distance.km < 2.2) {
 			landedMsg.push(`\n\nAircraft appears to have landed at ${airportName}.`);
 		} else {
 			landedMsg.push(`\n\nLanded ${distance.miles.toFixed(1)} miles/${distance.km.toFixed(1)} km from airport.`);
