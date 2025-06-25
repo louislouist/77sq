@@ -114,6 +114,12 @@ export function redditApproachMessage(ac: Aircraft): string {
 
 		const distance = distanceFromAirport(lat, lon, closeAirport[0].lat, closeAirport[0].lon);
 		approachMsg.push(`\n\n${distance.miles.toFixed(1)} miles/${distance.km.toFixed(1)} km from airport.`);
+		approachMsg.push(`\n\nAltitude: ${ac.alt_baro} ft`);
+		if (ac.baro_rate && ac.baro_rate > 0) {
+			approachMsg.push(`climbing: ${ac.baro_rate} ft/min`)
+		} else if (ac.baro_rate && ac.baro_rate < 0) {
+			approachMsg.push(`decending: ${ac.baro_rate} ft/min`)
+		}
 
 		approachMsg.push(mapLink);
 	}

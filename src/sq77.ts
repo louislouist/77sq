@@ -116,17 +116,20 @@ async function updateTrackedAircraft(
 		// Add tracking session update to queue
 		dbQueue.add(() => dbSingleAircraftTracking(db, flight, sessionId, seqNr));
 
+		// resets if flight lifts off again or there is a data error with "ground".
+		if (typeof flight.alt_baro === 'number') {
+			if (tracking[index].ground === true && flight.alt_baro > 1000) {
+				tracking[index].ground = false;
+			}
+		}
+
 		// If we've tracked this aircraft exactly 3 times, create Reddit post
 		if (tracking[index].count === 3) {
 			if (RedditPoster.isConfigured()) {
 				//debug
 				console.log("RedditPoster configured()");
 				//endDebug
-				// const subreddit = 'squawk7700'; // Set your target subreddit
-				// const postContent = `Flight details for ${flight.flight || flight.r || flight.hex}`;
-				// dbQueue.add(() => dbCreateRedditPost(db, flight, sessionId, tracking[index].count, subreddit, postContent));
 				await redditPoster(db, flight, sessionId);
-				// await simpleRedditPost(flight);
 			}
 		}
 

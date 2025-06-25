@@ -1,5 +1,4 @@
 TODO::
-Add map to reddit post
 Improve telegram messages
 Haven't had a failed reddit post so not sure how the exception handling will work.
 	Should write to the social_posts table failed but...
@@ -137,4 +136,7 @@ need telegram test channel
 add approach and on ground followup posts.
 	handle nav_modes when the flight goes into approach.
 rm src/social/getEmitterCategory.xx
+Add map to reddit post
+Add altitude to approach and decent rate.
+Write handling of ground to air again by reset of tracking ground flag.
 

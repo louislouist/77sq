@@ -128,7 +128,7 @@ export function buildAircraftInfoTextRMD(aircraft: Aircraft): string {
 			winkInfo = `[${icaoInfo.model}](${icaoInfo.modelLink}) `
 		}
 
-		info.push(`***Aircraft***: ${aircraft.t}: ${winkInfo} [doc8643.com](https://www.doc8643.com/aircraft/${aircraft.t})`);
+		info.push(`***Aircraft***: ${aircraft.t}: ${winkInfo} [${aircraft.t} on doc8643.com](https://www.doc8643.com/aircraft/${aircraft.t})`);
 	}
 
 	if (aircraft.category) {
@@ -160,11 +160,6 @@ export function buildAircraftInfoTextRMD(aircraft: Aircraft): string {
 	}
 
 	// Location Info
-	// TODO: write func to handle lat, rr_lat, lon, rr_lon.
-	// deal with building freq table: 
-	// Type | Description | Freq.
-	// ---- | ----- | -----
-	// needs seperate push before return due to newline formatting.
 	const airportInfo: string[] = [];
 	if (aircraft.lat !== undefined && aircraft.lon !== undefined) {
 		info.push(`***Position***: ${aircraft.lat.toFixed(4)}, ${aircraft.lon.toFixed(4)}\n`);
@@ -185,6 +180,7 @@ export function buildAircraftInfoTextRMD(aircraft: Aircraft): string {
 
 	return redditPost;
 }
+
 function getAirportInfo(lat: number, lon: number): string[] {
 	const closest = findClosestAirports(lat, lon, loadAirports(), 3);
 	const airportInfo: string[] = [];
