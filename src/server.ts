@@ -13,7 +13,7 @@ interface Version {
 }
 
 app.get('/', (_req, res) => {
-	res.send('Hello from Express!');
+	res.send('Hello from 77sq!');
 });
 
 app.get('/tracking', async (req: Request, res: Response) => {
