@@ -121,6 +121,11 @@ export function redditApproachMessage(ac: Aircraft): string {
 			approachMsg.push(`decending: ${ac.baro_rate} ft/min`)
 		}
 
+		// TODO: heading?
+		if (ac.track) {
+			approachMsg.push(`\n\nheading: ${ac.track}°`)
+		}
+
 		approachMsg.push(mapLink);
 	}
 

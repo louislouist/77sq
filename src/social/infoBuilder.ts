@@ -89,7 +89,7 @@ export function buildAircraftInfoTextRMD(aircraft: Aircraft): string {
 
 	const linkInfo: string[] = [];
 
-	if (aircraft.flight && aircraft.flight != "") {
+	if (aircraft.flight && aircraft.flight.trim() != "") {
 		const faUrl = getFlightAwareUrl(aircraft.flight);
 		linkInfo.push(`[${aircraft.flight.trim()} on FightAware](${faUrl})`);
 	}

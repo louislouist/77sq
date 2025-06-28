@@ -1,4 +1,7 @@
 TODO::
+Better screen logging
+Track "ground" #
+tracking by hex/call/tail
 Improve telegram messages
 Haven't had a failed reddit post so not sure how the exception handling will work.
 	Should write to the social_posts table failed but...
