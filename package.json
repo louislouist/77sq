@@ -1,36 +1,36 @@
 {
-  "name": "77sq",
-  "version": "1.0.0",
-  "main": "index.js",
-  "scripts": {
-    "build": "tsc && cp src/db/schema.sql dist/db/schema.sql",
-    "clean": "rm -rf dist/*",
-    "start": "node dist/index.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "npmLocal": "need to build airport utils and postreddit"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": "",
-  "devDependencies": {
-    "@types/express": "^5.0.1",
-    "@types/node": "^22.15.18",
-    "@types/uuid": "^10.0.0",
-    "ts-node": "^10.9.2",
-    "ts-node-dev": "^2.0.0",
-    "typescript": "^5.8.3"
-  },
-  "dependencies": {
-    "closest-airport-static-utils": "git+http://github.com/louislouist/closest-airport-static-utils.git",
-    "express": "^5.1.0",
-    "grammy": "^1.36.3",
-    "icao-designation": "git+http://github.com/louislouist/icaoDesignation.git",
-    "install": "^0.13.0",
-    "npm": "^11.4.1",
-    "postreddit": "git+http://github.com/louislouist/postreddit.git",
-    "sqlite": "^5.1.1",
-    "sqlite3": "^5.1.7",
-    "uuid": "^11.1.0"
-  }
+	"name": "77sq",
+	"version": "1.1.0",
+	"main": "index.js",
+	"scripts": {
+		"build": "tsc && cp src/db/schema.sql dist/db/schema.sql",
+		"clean": "rm -rf dist/*",
+		"start": "node dist/index.js",
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"npmLocal": "need to build airport utils and postreddit"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"description": "",
+	"devDependencies": {
+		"@types/express": "^5.0.1",
+		"@types/node": "^22.15.18",
+		"@types/uuid": "^10.0.0",
+		"ts-node": "^10.9.2",
+		"ts-node-dev": "^2.0.0",
+		"typescript": "^5.8.3"
+	},
+	"dependencies": {
+		"closest-airport-static-utils": "git+http://github.com/louislouist/closest-airport-static-utils.git",
+		"express": "^5.1.0",
+		"grammy": "^1.36.3",
+		"icao-designation": "git+http://github.com/louislouist/icaoDesignation.git",
+		"install": "^0.13.0",
+		"npm": "^11.4.1",
+		"postreddit": "git+http://github.com/louislouist/postreddit.git",
+		"sqlite": "^5.1.1",
+		"sqlite3": "^5.1.7",
+		"uuid": "^11.1.0"
+	}
 }

@@ -1,7 +1,7 @@
 import { RedditPoster } from "postreddit";
 import { getDB } from "./db/db";
 import { startServer, stopServer } from "./server";
-import { sq77too, stopSq77 } from "./sq77";
+import { sq77, stopSq77 } from "./sq77";
 import { TelegramBotManager } from "./social/TelegramBot";
 
 let startSq77 = false;
@@ -31,7 +31,7 @@ async function main() {
 	}
 
 	startSq77 = true;
-	sq77too(db).catch((err) => {
+	sq77(db).catch((err) => {
 		console.error("sq77() error: ", err);
 	});
 
