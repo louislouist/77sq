@@ -303,11 +303,22 @@ async function updateAircraftInSessions(
 		if (sessions[index].count > 4 && ac.alt_baro === "ground") {
 			sessions[index].ground = true;
 		}
+		// reset "ground" if above 3000ft
+		if (sessions[index].count > 4 && typeof ac.alt_baro === 'number' && ac.alt_baro > 3000) {
+			sessions[index].ground = false;
+		}
+
 
 		// and also approach
 		if (sessions[index].count > 4 && ac.nav_modes?.includes("approach")) {
 			sessions[index].approach = true;
 		}
+
+		// reset approach when reset
+		if (sessions[index].count > 4 && !ac.nav_modes?.includes("approach")) {
+			sessions[index].approach = false;
+		}
+		``
 	}
 }
 
