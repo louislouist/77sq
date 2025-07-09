@@ -66,6 +66,26 @@ CREATE TABLE IF NOT EXISTS social_posts (
     FOREIGN KEY (platform_id) REFERENCES social_platforms(id)
 );
 
+-- adsb endpoints for fetchAdsb()
+CREATE TABLE IF NOT EXISTS adsb_endpoints (
+	id INTEGER PRIMARY KEY AUTOINCREMENT,
+	adsb_query_type TEXT NOT NULL CHECK(adsb_query_type IN (
+		'squawk', 'hex', 'callsign', 'registration', 'type'
+	)),
+	definition TEXT NOT NULL CHECK(definition IN(
+		'default', 'user_defined', 'telegram', 'web'
+	)),
+	squawk TEXT UNIQUE,
+	hex TEXT UNIQUE,
+	callsign TEXT UNIQUE,
+	registration TEXT UNIQUE,
+	type TEXT UNIQUE, 
+	is_enabled BOOLEAN NOT NULL DEFAULT 1,
+	created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+	updated_at TEXT DEFAULT CURRENT_TIMESTAMP
+);
+
+
 -- Indexing for session or aircraft
 CREATE INDEX idx_tracking_sessions_session_id ON tracking_sessions(session_id);
 CREATE INDEX idx_tracking_sessions_aircraft_id ON tracking_sessions(aircraft_id);

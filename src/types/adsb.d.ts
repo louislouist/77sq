@@ -44,6 +44,7 @@ export interface Aircraft {
 	seen?: number;  // Seconds since last message seen
 	rssi?: number;  // Signal strength (Received Signal Strength Indicator)
 	nav_modes?: string[]; // set of engaged automation modes: ‘autopilot’, ‘vnav’, ‘althold’, ‘approach’, ‘lnav’, ‘tcas’
+	endpoint?: string; // adsb.lol endpoint
 
 	// lastPosition: [Object],
 	// "nav_modes":["autopilot","approach","tcas"]

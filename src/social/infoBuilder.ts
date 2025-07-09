@@ -1,4 +1,4 @@
-import { findClosestAirports, loadAirports, Frequency, liveATCExistsByICAO } from 'closest-airport-static-utils';
+import { findClosestAirports, Frequency, liveATCExistsByICAO } from 'closest-airport-static-utils';
 import { Aircraft } from '../types/adsb';
 import { getEmitterCategoryInfo, findDesignationByICAO } from 'icao-designation';
 
@@ -182,7 +182,7 @@ export function buildAircraftInfoTextRMD(aircraft: Aircraft): string {
 }
 
 function getAirportInfo(lat: number, lon: number): string[] {
-	const closest = findClosestAirports(lat, lon, loadAirports(), 3);
+	const closest = findClosestAirports(lat, lon, 3);
 	const airportInfo: string[] = [];
 
 	if (!closest || !Array.isArray(closest)) {

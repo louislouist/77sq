@@ -1,15 +1,9 @@
 TODO::
-Better screen logging
-Track "ground" #
-tracking by hex/call/tail
 Improve telegram messages
 Haven't had a failed reddit post so not sure how the exception handling will work.
 	Should write to the social_posts table failed but...
 setup CI on remote system
 remove log file writes for most cases.
-remove unused db items.
-	check db/queue
-unify db methods.
 
 
 
@@ -142,4 +136,9 @@ rm src/social/getEmitterCategory.xx
 Add map to reddit post
 Add altitude to approach and decent rate.
 Write handling of ground to air again by reset of tracking ground flag.
+fix ground update for all cases.
+Better screen logging
+tracking by hex/call/tail
+remove unused db items.
+	check db/queue
 

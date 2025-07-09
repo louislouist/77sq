@@ -29,3 +29,39 @@ export function formatDateEpoch(time: number, local?: string): string {
 
 	return formatted;
 }
+
+export function getTimestamp(): string {
+	const now = new Date();
+
+	// Get hours, minutes, and seconds
+	const hours = now.getHours().toString().padStart(2, '0');
+	const minutes = now.getMinutes().toString().padStart(2, '0');
+	const seconds = now.getSeconds().toString().padStart(2, '0');
+
+	// Get day of the week (e.g., "Sat")
+	const dayOfWeek = now.toLocaleString('en-US', { weekday: 'short' });
+
+	// Get month and day (e.g., "06-28")
+	const month = (now.getMonth() + 1).toString().padStart(2, '0'); // Month is zero-indexed
+	const day = now.getDate().toString().padStart(2, '0');
+
+	// Get the year (e.g., "2025")
+	const year = now.getFullYear();
+
+	// Format the string as "HH:MM:SS Day MM-DD-YYYY"
+	return `${hours}:${minutes}:${seconds} ${dayOfWeek} ${month}-${day}-${year}`;
+}
+
+export function timeLastSeen(time: number): string {
+	const last = new Date(time);
+
+	const hours = last.getHours().toString().padStart(2, '0');
+	const minutes = last.getMinutes().toString().padStart(2, '0');
+	const seconds = last.getSeconds().toString().padStart(2, '0');
+	const month = (last.getMonth() + 1).toString().padStart(2, '0'); // Months are 0-indexed
+	const day = last.getDate().toString().padStart(2, '0');
+	const year = last.getFullYear();
+
+	return `${hours}:${minutes}:${seconds}:${month}/${day}/${year}`;
+}
+

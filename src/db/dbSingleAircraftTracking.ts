@@ -2,9 +2,9 @@ import { Database } from 'sqlite';
 import { Aircraft } from '../types';
 import { handleAltBar } from '../etc/Handlers';
 
-export async function dbSingleAircraftTracking(db: Database, ac: Aircraft, trackingId: string, seqNr: number) {
+export async function dbSingleAircraftTracking(db: Database, ac: Aircraft, sessionId: string, seqNr: number) {
 	// TODO: add console.error(s)
-	if (!ac || !ac.hex || !trackingId) return;
+	if (!ac || !ac.hex || !sessionId) return;
 
 	// const db = await open({
 	// 	filename: 'adsb.sqlite',
@@ -74,7 +74,7 @@ export async function dbSingleAircraftTracking(db: Database, ac: Aircraft, track
 			`INSERT INTO tracking_sessions (session_id, seqNr, aircraft_id, type, alt_baro, squawk, emergency_type, lat, lon, raw_json, created_at)
 			 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))`,
 			[
-				trackingId,
+				sessionId,
 				seqNr,
 				aircraftId,
 				ac.type ?? null,

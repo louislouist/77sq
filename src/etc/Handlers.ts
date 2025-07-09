@@ -12,3 +12,21 @@ export function handleAltBar(alt_bar: number | string | undefined): number | nul
 
 	return alt_bar;
 }
+
+export function getRandomNumber(min: number, max: number): number {
+	return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+export function lineBreak(length: number, label = '', char = '-') {
+	const lable_length = label.length;
+	const line = char.repeat(length - lable_length);
+	console.log(`${line}${label ? ' ' + label + ' ' + line : line}`);
+}
+
+export function shortSessionId(sessionId: string): string {
+	if (sessionId.length <= 10) return sessionId;
+	const firstFive = sessionId.slice(0, 5);
+	const lastFive = sessionId.slice(-5);
+	return `${firstFive}...${lastFive}`;
+}
+

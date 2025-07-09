@@ -3,7 +3,7 @@ import { Aircraft } from "../types";
 import { getRedditMessageBySessionId } from "../db/dbCreateRedditPost";
 import { extractPostId, RedditPoster } from "postreddit";
 import { dbRedditPost } from "./simpleRedditPost";
-import { findClosestAirports, haversineDistance, loadAirports } from "closest-airport-static-utils";
+import { findClosestAirports, haversineDistance } from "closest-airport-static-utils";
 
 export async function postRedditComment(db: Database, sessionId: string, message: string) {
 	try {
@@ -49,8 +49,7 @@ export function redditLandedMessage(ac: Aircraft): string {
 
 		let msgAirport: string[] = [];
 
-		const airports = loadAirports();
-		const closeAirport = findClosestAirports(lat, lon, airports, 1, []);
+		const closeAirport = findClosestAirports(lat, lon, 1, []);
 
 		const airportName = closeAirport[0].name;
 		msgAirport.push(`\n\n${airportName}`);
@@ -104,8 +103,7 @@ export function redditApproachMessage(ac: Aircraft): string {
 		// using the [large_airport, medium_aiport] default of findClosestAirports()
 		// because of the unlikely case of using autopilot for a helipad, etc emergency approach.
 		// NOTE: determine if airportTypes should be set to large_airport only.
-		const airports = loadAirports();
-		const closeAirport = findClosestAirports(lat, lon, airports, 1);
+		const closeAirport = findClosestAirports(lat, lon, 1);
 		const airportName = closeAirport[0].name;
 		const airportIcao = closeAirport[0].icao;
 		const airportIata = closeAirport[0].iata;

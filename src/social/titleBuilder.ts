@@ -1,4 +1,4 @@
-import { findClosestAirports, loadAirports } from 'closest-airport-static-utils';
+import { findClosestAirports } from 'closest-airport-static-utils';
 import { findDesignationByICAO } from 'icao-designation';
 
 // Squwak 7700 {type} emergency. Registration {r}: ({t}): Call sign: {flight}: Near {city} (hex if no r or call.)
@@ -113,8 +113,7 @@ export function titleBuilderTelegram(aircraft: SquawkText): string | null {
 
 
 function largeAirportInfo(lat: number, lon: number): string {
-	const airports = loadAirports();
-	const firstLargeAirport = findClosestAirports(lat, lon, airports, 1, ['large_airport']);
+	const firstLargeAirport = findClosestAirports(lat, lon, 1, ['large_airport']);
 
 	const airportInfo: string[] = []
 
