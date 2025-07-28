@@ -220,7 +220,7 @@ async function updateAircraftInSessions(
 	const index = sessions.findIndex(tracked => tracked.hex === hex);
 	if (index !== -1) {
 		// update session for current ac.
-		sessions[index].acType = ac.type;
+		sessions[index].acType = ac.t;
 		sessions[index].endpoint = ac.endpoint ?? 'MISSING';
 		sessions[index].squawk = ac.squawk ?? '-55';
 		sessions[index].count += 1;
@@ -318,7 +318,6 @@ async function updateAircraftInSessions(
 		if (sessions[index].count > 4 && !ac.nav_modes?.includes("approach")) {
 			sessions[index].approach = false;
 		}
-		``
 	}
 }
 

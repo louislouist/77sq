@@ -38,9 +38,9 @@ export function titleBuilder(aircraft: SquawkText): string | null {
 	}
 
 	if (!aircraft.registration && !aircraft.callsign) {
-		title.push(`hex code: ${aircraft.hex} `)
+		title.push(`hex code: ${aircraft.hex?.toUpperCase()} `)
 	} else {
-		title.push(`hex: ${aircraft.hex} `)
+		title.push(`hex: ${aircraft.hex?.toUpperCase()} `)
 	}
 
 	if (aircraft.equipment) {
