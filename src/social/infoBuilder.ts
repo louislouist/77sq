@@ -110,6 +110,14 @@ export function buildAircraftInfoTextRMD(aircraft: Aircraft): string {
 		linkInfo.push(`[OSM Location](https://www.openstreetmap.org/#map=13/${lat}/${lon})`);
 	}
 
+	// only post google maps if aircraft has a heading.
+	if ((aircraft.lat && aircraft.lon || aircraft.rr_lat && aircraft.rr_lon) && aircraft.track) {
+		const lat = aircraft.lat || aircraft.rr_lat;
+		const lon = aircraft.lon || aircraft.rr_lon;
+		linkInfo.push(`[Google Maps](https://www.google.com/maps/search/airports/@${lat},${lon},11z)`);
+
+	}
+
 	info.push(linkInfo.join(' · '));
 
 	// Aircraft Info
