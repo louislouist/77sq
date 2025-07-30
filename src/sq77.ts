@@ -13,6 +13,7 @@ import { postRedditComment, redditApproachMessage, redditLandedMessage } from ".
 import { getTrackable } from "./db/getTrackable";
 import { getRandomNumber, lineBreak, shortSessionId } from "./etc/Handlers";
 import { infoAircraft } from "./etc/Text";
+import { setSessions } from "./web/sessionStore";
 
 let running = true;
 
@@ -73,6 +74,9 @@ export async function sq77(db: Database): Promise<void> {
 		await processAircraftAndSessions(db, ac, sessions, now);
 
 		cleanupExpiredSessions(sessions, oneHourAgo)
+
+		// web aircraft session
+		setSessions(sessions);
 
 		if (!hasCurrentAircraft && !hasTrackedAircraft) {
 			logAircraft("No aircraft tracked & no current sessions tracked.")

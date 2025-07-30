@@ -1,11 +1,13 @@
 import { RedditPoster } from "postreddit";
 import { getDB } from "./db/db";
-import { startServer, stopServer } from "./server";
+import { startServer, stopServer } from "./web/server";
 import { sq77, stopSq77 } from "./sq77";
 import { TelegramBotManager } from "./social/TelegramBot";
 
 let startSq77 = false;
 let startTelegram = false;
+
+const PORT = 3333;
 
 async function main() {
 	const db = await getDB();
@@ -13,7 +15,13 @@ async function main() {
 	// if schema check fails, stop running.
 	if (!db) { return };
 
-	startServer(db);
+	startServer(db, PORT).then((server) => {
+		if (server) {
+			console.log('Server started successfully!');
+		} else {
+			console.error('Could not start server!!!!');
+		}
+	});
 
 	if (RedditPoster.isConfigured()) {
 		console.log("Reddit Posting Configured");

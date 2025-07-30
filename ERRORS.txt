@@ -1,4 +1,9 @@
-============debugging tracking=========
+sq77() error:  TypeError: Cannot read properties of undefined (reading 'name')
+    at redditLandedMessage (/Users/ltrump/src/7700/77sq/dist/social/postRedditComment.js:48:45)
+    at updateAircraftInSessions (/Users/ltrump/src/7700/77sq/dist/sq77.js:456:77)
+    at async processAircraftAndSessions (/Users/ltrump/src/7700/77sq/dist/sq77.js:358:13)
+    at async sq77too (/Users/ltrump/src/7700/77sq/dist/sq77.js:314:9)
+
 session_id: 4bf61580-8cd7-43bd-a40e-610f13f67722, seqNr: 3
 RedditPoster configured()
 Squawk 7700 · G-BYVO · callsign: SKY7 hex: 400EEC (G115) near: EGGW: London Luton Airport reported.

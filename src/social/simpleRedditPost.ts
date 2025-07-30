@@ -4,7 +4,7 @@ import { createSocialPost } from "./createSocialPost";
 import { writeRandomTextFile } from "../etc/writeRandomTextFile";
 import { dbQueue } from "../db/queue/dbQueue";
 import { Database } from "sqlite";
-import { buildAircraftInfoText, buildAircraftInfoTextRMD } from "./infoBuilder";
+import { buildAircraftInfoTextRMD } from "./infoBuilder";
 import { TelegramBotManager } from "./TelegramBot";
 import { dbTelegramBot } from "../db/dbTelegramBot";
 

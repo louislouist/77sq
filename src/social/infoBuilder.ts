@@ -125,7 +125,7 @@ export function buildAircraftInfoTextRMD(aircraft: Aircraft): string {
 		let winkInfo = "";
 
 		if (icaoInfo != null) {
-			winkInfo = `[${icaoInfo.model}](${icaoInfo.modelLink}) `
+			winkInfo = `[${icaoInfo.model}](${icaoInfo.modelLink}) · `
 		}
 
 		info.push(`***Aircraft***: ${aircraft.t}: ${winkInfo} [${aircraft.t} on doc8643.com](https://www.doc8643.com/aircraft/${aircraft.t})`);
@@ -194,9 +194,9 @@ function getAirportInfo(lat: number, lon: number): string[] {
 	if (closest.length > 0) {
 		closest.forEach(airport => {
 			const icaoName = airport.icao;
-			airportInfo.push(`### ***${airport.name} (${airport.iata || airport.icao})***`);
+			airportInfo.push(`### ***${airport.name} (${airport.iata || airport.icao || "n/a"})***`);
 			if (airport.wikipedia) {
-				airportInfo.push(` [${airport.iata || airport.icao} Wikipedia](${airport.wikipedia})\n`)
+				airportInfo.push(` [${airport.iata || airport.icao || airport.name} Wikipedia](${airport.wikipedia})\n`)
 			}
 			if (icaoName && icaoName.trim() !== "") {
 				// NOTE: MD for reddit
