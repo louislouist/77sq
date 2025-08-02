@@ -1,7 +1,8 @@
 TODO::
+lastSeen route
+sessionId route
+active flight type for session display: flight console
 Review braking out social posts and aircraft/session handling
-reddit add google maps and handle wikipedia parsing bug
-add seperator for ac.t
 Review titleBuilders
 Improve telegram messages
 Haven't had a failed reddit post so not sure how the exception handling will work.
@@ -145,4 +146,6 @@ Better screen logging
 tracking by hex/call/tail
 remove unused db items.
 	check db/queue
+reddit add google maps and handle wikipedia parsing bug
+add seperator for ac.t
 

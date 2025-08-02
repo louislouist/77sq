@@ -2,7 +2,8 @@ import express, { Request, Response } from 'express';
 import { Server } from 'http';
 import { Database } from 'sqlite';
 import { dbQueue } from '../db/queue/dbQueue';
-import { getSessions } from './sessionStore';
+import { getSessions, getSessionsSortedByLastSeen } from './sessionStore';
+import { doc8643Url } from '../etc/Urls';
 
 const app = express();
 const MAX_PORT_RETRIES = 10;
@@ -56,7 +57,7 @@ app.get('/sessions', (_req: Request, res: Response) => {
 });
 
 app.get('/sessions/html', (_req, res) => {
-	const sessions = getSessions();
+	const sessions = getSessionsSortedByLastSeen()
 
 	const rows = sessions.map(s => `
 		<tr>
@@ -64,7 +65,9 @@ app.get('/sessions/html', (_req, res) => {
 			<td>${s.hex}</td>
 			<td>${s.endpoint}</td>
 			<td>${s.squawk}</td>
-			<td>${s.acType || 'N/A'}</td>
+			<td>
+				${s.acType ? `<a href="${doc8643Url(s.acType)}">${s.acType}</a>` : 'N/A'}
+			</td>
 			<td>${s.count}</td>
 			<td>${s.ground}</td>
 			<td>${s.approach}</td>
