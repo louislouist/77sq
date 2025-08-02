@@ -1,6 +1,7 @@
 import express from 'express';
 import { Server } from 'http';
 import { Database } from 'sqlite';
+import rootRoutes from './routes/root.routes';
 import sessionRoutes from './routes/session.routes';
 import trackingRoutes from './routes/tracking.routes';
 
@@ -9,10 +10,11 @@ const MAX_PORT_RETRIES = 10;
 
 let server: Server;
 
-app.get('/', (_req, res) => {
-	res.send('Hello from 77sq!');
-});
+// app.get('/', (_req, res) => {
+// 	res.send('Hello from 77sq!');
+// });
 
+app.use('/', rootRoutes);
 app.use('/tracking', trackingRoutes);
 app.use('/sessions', sessionRoutes);
 

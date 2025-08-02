@@ -22,7 +22,7 @@ export const getSessionsHtml = (_req: Request, res: Response) => {
 			<td>${s.hex}</td>
 			<td>${s.endpoint}</td>
 			<td>${s.squawk}</td>
-			<td>${s.acType ? `<a href="${doc8643Url(s.acType)}">${s.acType}</a>` : 'N/A'}</td>
+			<td>${renderAcHref(s.acType)}</td>
 			<td>${s.count}</td>
 			<td>${s.ground}</td>
 			<td>${s.approach}</td>
@@ -48,3 +48,9 @@ export const getSessionsHtml = (_req: Request, res: Response) => {
 
 	res.send(html);
 };
+
+function renderAcHref(acType?: string): string {
+	if (!acType) return 'N/A';
+	const url = doc8643Url(acType);
+	return `<a href="${url}">${acType}</a>`;
+}
