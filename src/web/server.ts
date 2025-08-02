@@ -1,98 +1,20 @@
-import express, { Request, Response } from 'express';
+import express from 'express';
 import { Server } from 'http';
 import { Database } from 'sqlite';
-import { dbQueue } from '../db/queue/dbQueue';
-import { getSessions, getSessionsSortedByLastSeen } from './sessionStore';
-import { doc8643Url } from '../etc/Urls';
+import sessionRoutes from './routes/session.routes';
+import trackingRoutes from './routes/tracking.routes';
 
 const app = express();
 const MAX_PORT_RETRIES = 10;
 
 let server: Server;
 
-interface Version {
-	version: string;
-}
-
 app.get('/', (_req, res) => {
 	res.send('Hello from 77sq!');
 });
 
-app.get('/tracking', async (req: Request, res: Response) => {
-	const db = req.app.locals.db;
-
-	try {
-		const items = await db.all('SELECT sqlite_version() AS version');
-		const ver = await dbQueue.all<Version[]>(db, 'SELECT sqlite_version() AS version');
-
-		const html = `<!DOCTYPE html>
-    <html>
-      <head><title>Item List</title></head>
-      <body>
-        <h1>Items</h1>
-        <ul>
-          <li>SQLite version ${items[0].version}</li>
-<li>all version ${ver[0].version}</li>
-        </ul>
-      </body>
-    </html>`;
-
-		res.send(html);
-	} catch (err) {
-		console.error("Error fetching data: ", err);
-		res.status(500).send('Internal Server Error');
-	}
-});
-
-app.get('/sessions', (_req: Request, res: Response) => {
-	const sessions = getSessions();
-
-	// Optionally format for display
-	const formatted = sessions.map(s => ({
-		...s,
-		lastSeen: new Date(s.lastSeen).toISOString(), // or any formatting
-	}));
-
-	res.json(formatted);
-});
-
-app.get('/sessions/html', (_req, res) => {
-	const sessions = getSessionsSortedByLastSeen()
-
-	const rows = sessions.map(s => `
-		<tr>
-			<td>${s.id}</td>
-			<td>${s.hex}</td>
-			<td>${s.endpoint}</td>
-			<td>${s.squawk}</td>
-			<td>
-				${s.acType ? `<a href="${doc8643Url(s.acType)}">${s.acType}</a>` : 'N/A'}
-			</td>
-			<td>${s.count}</td>
-			<td>${s.ground}</td>
-			<td>${s.approach}</td>
-			<td>${new Date(s.lastSeen).toISOString()}</td>
-		</tr>
-	`).join('');
-
-	const html = `
-		<html>
-		<head><title>Sessions</title></head>
-		<body>
-			<h1>Active Sessions</h1>
-			<table border="1">
-				<tr>
-					<th>ID</th><th>Hex</th><th>Endpoint</th><th>Squawk</th><th>Type</th>
-					<th>Count</th><th>Ground</th><th>Approach</th><th>Last Seen</th>
-				</tr>
-				${rows}
-			</table>
-		</body>
-		</html>
-	`;
-
-	res.send(html);
-});
+app.use('/tracking', trackingRoutes);
+app.use('/sessions', sessionRoutes);
 
 export async function startServer(db: Database, startingPort: number = 3000): Promise<Server | null> {
 	app.locals.db = db;
