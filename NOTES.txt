@@ -1,6 +1,11 @@
 TODO::
+Add UTC time for post under Current Status for reddit post.
+	this helps with LiveATC archives.
 lastSeen route
 sessionId route
+	by_sesssion
+		create type from table
+		allow for viewing raw_json.
 active flight type for session display: flight console
 Review braking out social posts and aircraft/session handling
 Review titleBuilders

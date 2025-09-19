@@ -58,6 +58,7 @@ async function shutdown() {
 
 	if (startTelegram) {
 		await TelegramBotManager.shutdown()
+		startTelegram = false;
 	}
 
 	await stopServer();

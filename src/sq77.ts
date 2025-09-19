@@ -28,7 +28,6 @@ function getPollingInterval(aircraftCount: number): number {
 	return aircraftCount > 0 ? ACTIVE_POLL_INTERVAL : IDLE_POLL_INTERVAL;
 }
 
-
 function logAircraft(message: string) {
 	const dateTime = getTimestamp();
 
