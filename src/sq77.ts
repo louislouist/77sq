@@ -18,8 +18,8 @@ import { setSessions } from "./web/sessionStore";
 let running = true;
 
 const ONE_HOUR_MS = 60 * 60 * 1000;
-const ACTIVE_POLL_INTERVAL = 6000;   // When aircraft are being tracked
-const IDLE_POLL_INTERVAL = 30000;    // When no aircraft are being tracked
+const ACTIVE_POLL_INTERVAL = 10000;  // When aircraft are being tracked
+const IDLE_POLL_INTERVAL = 60000;    // When no aircraft are being tracked
 
 /**
  * Determines the appropriate polling interval based on activity
@@ -52,7 +52,8 @@ export async function sq77(db: Database): Promise<void> {
 		// TODO: currentAC
 		let ac: Aircraft[] = [];
 
-		const retryDelay = getRandomNumber(500, 3500);
+		// base delay for exponential backoff in fetchADSB()
+		const retryDelay = getRandomNumber(500, 1500);
 		// if mode debug print all aircraft.
 
 		const results = await Promise.all(
